@@ -1,0 +1,14 @@
+/bin/
+/build/
+/dist/
+/develop-eggs/
+/parts/
+/.installed.cfg
+/eggs/
+/__pycache__/
+/groundstation.egg-info/
+/tests/*
+!/tests/.gitkeep
+.project
+.pydevproject
+.idea
