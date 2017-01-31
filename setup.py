@@ -14,11 +14,13 @@ setup(name='groundstation',
       author_email='software@uvicaero.com',
       url='www.uvicaero.com',
       license='MIT',
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      packages=find_packages(exclude=['ez_setup']),
       include_package_data=True,
       zip_safe=True,
       install_requires=[
-          'pillow'
+          'pillow',
+          'tornado',
+          'motor'
       ],
       entry_points="""
       # -*- Entry points: -*-
