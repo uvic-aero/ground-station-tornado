@@ -20,3 +20,7 @@ class WebSocketHandler(websocket.WebSocketHandler):
 
     def get_identity(self):
         return self._identifier
+
+    def check_origin(self, origin):
+        return True
+
