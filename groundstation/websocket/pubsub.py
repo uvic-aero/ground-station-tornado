@@ -8,6 +8,7 @@ class Subscriptions:
         self._subscriptions = {_type: [] for _type in self._subscription_types}
 
     def subscribe(self, client, subscription_type: str):
+
         if subscription_type not in self._subscription_types:
             return
 
@@ -43,10 +44,12 @@ class Subscriptions:
         if subscription_type is None:
 
             # Pull the subscribers across all types
-            subscribers = [(sub for sub in self._subscriptions[_type]) for _type in self._subscription_types]
+            subscribers = {}
+            for _type in self._subscription_types:
+                subscribers[_type] = self._subscriptions[_type] 
 
             # The set conversion will remove duplicate subs
-            return list(set(subscribers))
+            return subscribers
 
         elif subscription_type in self._subscription_types:
             return self._subscriptions[subscription_type]

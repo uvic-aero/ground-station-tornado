@@ -1,8 +1,10 @@
 from .websocket import websocket
 from .udp_handler import UDPHandler
 from .api import API
+from .simulator import Simulator
 
 from tornado import ioloop
+import sys
 import signal
 
 
@@ -36,6 +38,9 @@ class GroundStation:
 
         # Force IOLoop to wake up so interrupts can be handled
         ioloop.PeriodicCallback(self.check_should_exit, 100).start()
+
+        if 'simulate' in sys.argv:
+            Simulator().start()
 
         ioloop.IOLoop.instance().start()
 

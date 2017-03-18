@@ -10,7 +10,7 @@ class WebSocketHandler(websocket.WebSocketHandler):
         self._identifier = uuid4()
 
     def open(self):
-        pass
+        print("New client connected")
 
     def on_message(self, message):
         Parser(self, message)
