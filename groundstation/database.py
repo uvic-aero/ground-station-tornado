@@ -13,7 +13,7 @@ class Database:
         return self._image_collection
 
     @property
-    def image_collection(self):
+    def telemetry_collection(self):
         return self._telemetry_collection
 
 database = Database()

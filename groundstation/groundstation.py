@@ -7,7 +7,6 @@ from tornado import ioloop
 import sys
 import signal
 
-
 class GroundStation:
 
     def __init__(self):
