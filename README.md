@@ -9,15 +9,15 @@ This project depends on Python 3.6+
 ### Getting started
 In the root directory, run the following command to install the project dependencies:
 
-    python setup.py install
+    `python setup.py install`
 
 To run the project, use the following command:
 
-    python start.py
+    `python start.py`
 
 This will start the various servers and continue running.
 
 ### Options
 To simulate the receiving of images and telemetry for testing the web client, pass in the 'simulate' command line option. Example:
 
-    python start.py simulate
+    `python start.py simulate`
