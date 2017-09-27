@@ -1,4 +1,5 @@
 from .udp_handler import UDPHandler
+from .image_service import image_service
 
 class ImageReceiver(UDPHandler):
 
@@ -8,4 +9,8 @@ class ImageReceiver(UDPHandler):
 
     # Parse incoming images and determine what to do with them
     def handle_image(self, data, address):
+        
+        # After parsing image, send it to the image service
+        #image_service.add_new_image()
+
         pass

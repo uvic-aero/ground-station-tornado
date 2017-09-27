@@ -1,3 +1,4 @@
+import uuid
 
 # Basic concept of an image
 # Can have image data received over the network or loaded from the filesystem,
@@ -5,7 +6,7 @@
 class Image:
     def __init__(self, uuid=None):
 
-        self._uuid = uuid # Unique identifier used by database. If it does not exist, create it
+        self._uuid = uuid.uuid4() if uuid is None else uuid # Unique identifier used by database. If it does not exist, create it
         self.jpeg_data = None
         self.file_location = None
         self.timestamp = None
@@ -23,10 +24,6 @@ class Image:
     # Use telemetry service to find telemetry for this image/timestamp
     # The timestamp in this image must exist and be valid
     def match_telemetry(self):
-        pass
-
-    # Use the unique image ID to retrieve all information in the DB for this image
-    def load_from_database(self):
         pass
 
     # (over)write this image data to database
