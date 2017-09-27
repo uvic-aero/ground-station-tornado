@@ -16,7 +16,7 @@ class UDPHandler:
         for res in set(socket.getaddrinfo(None, self._port, socket.AF_UNSPEC, socket.SOCK_DGRAM,
                                           0, socket.AI_PASSIVE)):
 
-            af, socktype, proto, canonname, sockaddr = res
+            af, socktype, proto, _canonname, sockaddr = res
 
             if sockaddr[0] == '0.0.0.0':
 
@@ -32,13 +32,13 @@ class UDPHandler:
 
     def _add_handler(self):
 
-        def handler(fd, events):
+        def handler(_fd, _events):
 
             while True:
                 try:
                     data, address = self._socket.recvfrom(2500)
-                except socket.error as e:
-                    if e.args[0] in (errno.EWOULDBLOCK, errno.EAGAIN):
+                except socket.error as err:
+                    if err.args[0] in (errno.EWOULDBLOCK, errno.EAGAIN):
                         return
                     raise
                 if self._receive_func != None:
@@ -59,3 +59,6 @@ class UDPHandler:
             os._exit(1)
 
         print("UDP server listening on port %s" % self._port)
+
+    def stop(self):
+        self._socket.close()
