@@ -9,6 +9,8 @@ class UDPHandler:
     def __init__(self):
         self._socket = None
         self._started = False
+        self._receive_func = lambda d, a: None # Function that will handle the data we receive. Overridden by super class
+        self._port = None # Port this handler listens on
 
     def _bind_socket(self):
         for res in set(socket.getaddrinfo(None, self._port, socket.AF_UNSPEC, socket.SOCK_DGRAM,
@@ -39,16 +41,16 @@ class UDPHandler:
                     if e.args[0] in (errno.EWOULDBLOCK, errno.EAGAIN):
                         return
                     raise
-                self._handle_receive(data, address)
+                if self._receive_func != None:
+                    self._receive_func(data, address)
 
         IOLoop.instance().add_handler(self._socket.fileno(), handler, IOLoop.READ)
 
-    def _handle_receive(self, data, address):
-        pass
+    def start(self):
 
-    def start(self, port):
-
-        self._port = port
+        if self._port == None:
+            print("UDP Handler has no port defined")
+            os._exit(1)
 
         self._bind_socket()
 
@@ -56,4 +58,4 @@ class UDPHandler:
             print("Failed to start UDP server and bind socket")
             os._exit(1)
 
-        print("UDP server listening on port %s" % port)
+        print("UDP server listening on port %s" % self._port)

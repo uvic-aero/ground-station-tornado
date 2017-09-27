@@ -1,5 +1,5 @@
 from .websocket import websocket
-from .udp_handler import UDPHandler
+from .gps_receiver import GPSReceiver
 from .api import API
 from .simulator import Simulator
 
@@ -11,7 +11,7 @@ class GroundStation:
 
     def __init__(self):
         self._websocket = websocket.WebSocket()
-        self._udp_handler = UDPHandler()
+        self._receiver = GPSReceiver()
         self._api = API()
 
     @staticmethod
@@ -27,9 +27,9 @@ class GroundStation:
     def start(self):
 
         print("Starting ground station")
-
+        
+        self._receiver.start()
         self._websocket.start(24000)
-        self._udp_handler.start(24001)
         self._api.start(24002)
 
         # Handle interruption events
