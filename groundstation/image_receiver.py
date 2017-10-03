@@ -5,10 +5,9 @@ class ImageReceiver(UDPHandler):
 
     def __init__(self):
         self._port = 24003
-        self._receive_func = self.handle_image
 
     # Parse incoming images and determine what to do with them
-    def handle_image(self, data, address):
+    async def data_received(self, data, addr):
         
         # After parsing image, send it to the image service
         #image_service.add_new_image()

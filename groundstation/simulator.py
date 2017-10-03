@@ -1,5 +1,6 @@
 from .websocket import pubsub
 from tornado import ioloop
+import socket
 import json
 import random
 
@@ -42,10 +43,11 @@ class Simulator:
 
     def start(self):
         
-        ioloop.PeriodicCallback(self.send_images, 1000).start()
-        ioloop.PeriodicCallback(self.send_telemetry, 500).start()
+        ioloop.PeriodicCallback(self.send_images_webclient, 1000).start()
+        ioloop.PeriodicCallback(self.send_telemetry_webclient, 500).start()
+        ioloop.PeriodicCallback(self.send_telemetry_internal, 1000).start()
 
-    def send_images(self):
+    def send_images_webclient(self):
 
         subscribers = pubsub.subscriptions.get_subscribers()
 
@@ -56,7 +58,7 @@ class Simulator:
                 print("Sending images")
                 sub.write_message(json.dumps(test_images[random.randint(0, len(test_images)-1)]))
 
-    def send_telemetry(self):
+    def send_telemetry_webclient(self):
 
         subscribers = pubsub.subscriptions.get_subscribers()
 
@@ -65,3 +67,8 @@ class Simulator:
                 continue
             for sub in subscribers[type]:
                 sub.write_message(json.dumps(test_telemetry))
+
+    def send_telemetry_internal(self):
+
+        # Send UDP data to GPS receiver server
+        socket.socket(socket.AF_INET, socket.SOCK_DGRAM).sendto(json.dumps(test_telemetry).encode(), ("127.0.0.1", 24001))

@@ -8,6 +8,9 @@ from tornado import ioloop
 import sys
 import signal
 
+# Force tornado to use native asyncio event loop
+ioloop.IOLoop.configure('tornado.platform.asyncio.AsyncIOLoop')
+
 class GroundStation:
 
     def __init__(self):
