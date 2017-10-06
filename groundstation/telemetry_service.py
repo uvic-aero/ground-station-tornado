@@ -17,7 +17,7 @@ class TelemetryService:
     def add_telemetry(self, telemetry):
         
         # Append
-
+        self._telemetry.append(telemetry)
         # Then add it to database
         self.persist_single_to_database(telemetry)
 
