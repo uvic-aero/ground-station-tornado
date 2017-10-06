@@ -1,4 +1,4 @@
-from .database import database
+from database import database
 
 class TelemetryService:
 
@@ -28,3 +28,13 @@ class TelemetryService:
     # Persist telemetry object to DB
     def persist_single_to_database(self, telemetry):
         pass
+
+
+#Database test 
+test_telemetry = {
+    'type': 'telemetry',
+    'lat': 45.709,
+    'lon': 104.3467
+}
+
+database.persist_single_to_database(test_telemetry)
