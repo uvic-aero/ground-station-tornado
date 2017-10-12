@@ -27,6 +27,7 @@ class TelemetryService:
     def load_from_database(self): #set to print right now
         loop = asyncio.get_event_loop()
         loop.run_until_complete(database.do_find())
+        self._telemetry = self._telemetry + database.telemetry_array_from_db
 
         
 
@@ -40,8 +41,11 @@ class TelemetryService:
 test_telemetry = {
     'type': 'telemetry',
     'lat': 45.709,
-    'lon': 'wiener'
+    'lon': 101.1
 }
 telemetry = TelemetryService()
 telemetry.persist_single_to_database(test_telemetry)
 telemetry.load_from_database()
+print ("Tesing if telemetry has obtained values from db")
+print(telemetry._telemetry)
+
