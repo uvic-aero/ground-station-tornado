@@ -1,4 +1,6 @@
 from database import database
+from motor import motor_asyncio
+import asyncio
 
 class TelemetryService:
 
@@ -22,19 +24,24 @@ class TelemetryService:
         self.persist_single_to_database(telemetry)
 
     # Load all of the persisted telemetry data
-    def load_from_database(self):
-        pass
+    def load_from_database(self): #set to print right now
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(database.do_find())
+
+        
 
     # Persist telemetry object to DB
     def persist_single_to_database(self, telemetry):
-        pass
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(database.insert_telemetry(test_telemetry))
 
 
 #Database test 
 test_telemetry = {
     'type': 'telemetry',
     'lat': 45.709,
-    'lon': 104.3467
+    'lon': 'wiener'
 }
-
-database.persist_single_to_database(test_telemetry)
+telemetry = TelemetryService()
+telemetry.persist_single_to_database(test_telemetry)
+telemetry.load_from_database()

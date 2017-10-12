@@ -1,5 +1,5 @@
 from motor import motor_asyncio
-import motor.motor_asyncio
+import motor
 import asyncio
 import pprint
 import time
@@ -11,29 +11,64 @@ class Database:
         self._db = self._client.get_database('aero')
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
+        return None
+    
         
     @property
-    def image_collection(self):
+    async def image_collection(self):
         return self._image_collection
 
     @property
-    def telemetry_collection(self):
+    async def telemetry_collection(self):
         return self._telemetry_collection
 
-    async def add_image(self, entry): 
-        result = await self._image_collection.insert(entry)
-        print('result %s' % repr(result))
+    async def add_image(self, document): 
+        result = await self._image_collection.insert_one(document)
+        print('result %s' % repr(result.inserted_id))
+      
 
-    async def add_telemetry(self, entry): 
+    async def insert_telemetry(self, document): 
         #params : (entry for upload); this function adds a telemetry object to DB
-        result = await self._telemetry_collection.insert(entry)
-        print('result %s' % repr(result))
+        result = await self._telemetry_collection.insert_one(document)
+        print('result %s' % repr(result.inserted_id))
     
     async def get_image(self): 
         #params : (time stamp for desired object); function is designed to retreive object form DB
         pprint.pprint(self._image_collection.find({"type": "image"}))
+
+    async def do_find(self): 
+        cursor = self._telemetry_collection.find({'type': 'telemetry'})
+        telemetry_arr = []
+        for document in await cursor.to_list(length = 100):
+            telemetry_arr.append(document);
+            pprint.pprint(document)
+        for i in telemetry_arr:
+            print (telemetry_arr)
+        
+        #return telemetry
+
         
 
 #Test Code
 database = Database()
+image = {
+    'type': 'image',
+    'width': 671,
+    'height': 475,
+    'url': 'test'
+}
+telemetry = {
+    'type': 'telemetry',
+    'lat': 45.709,
+    'lon': 104.3467
+}
+#loop = asyncio.get_event_loop()
+#loop.run_until_complete(database.add_image(image))
+#loop = asyncio.get_event_loop()
+#loop.run_until_complete(database.do_find())
+
+#loop = asyncio.get_event_loop()
+#loop.run_until_complete(database.insert_telemetry(telemetry))
+
+
 
