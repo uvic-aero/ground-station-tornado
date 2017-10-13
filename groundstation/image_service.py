@@ -1,16 +1,18 @@
-from .database import database
-from .image import Image
+from database import database
+from image import Image
+from motor import motor_asyncio
+import asyncio
 
 class ImageService:
 
     def __init__(self):
         self._images = [] # List of Image instances
-
+        self.loop = asyncio.get_event_loop()
         self.load_images_from_database()
-
+        
     # Access database to load all image metadata
     def load_images_from_database(self):
-        pass
+        self._images = self.loop.run_until_complete(database.do_find_images())        
 
     # Find an image in the list using the uuid
     def get_image_by_id(self, uuid):
@@ -25,5 +27,3 @@ class ImageService:
         image.match_telemetry()
 
         self._images.append(image)
-        
-image_service = ImageService()

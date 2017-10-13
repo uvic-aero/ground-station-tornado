@@ -11,7 +11,8 @@ class Database:
         self._db = self._client.get_database('aero')
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
-        self.telemetry_array_from_db = []
+        #self.telemetry_array_from_db = []
+        #self.image_array_from_db = []
         return None
     
         
@@ -27,22 +28,24 @@ class Database:
         result = await self._image_collection.insert_one(document)
         print('result %s' % repr(result.inserted_id))
       
-
     async def insert_telemetry(self, document): 
-        #params : (entry for upload); this function adds a telemetry object to DB
         result = await self._telemetry_collection.insert_one(document)
         print('result %s' % repr(result.inserted_id))
     
-    async def get_image(self): 
-        #params : (time stamp for desired object); function is designed to retreive object form DB
-        pprint.pprint(self._image_collection.find({"type": "image"}))
-
-    async def do_find(self): 
+    async def do_find_images(self): 
+        cursor = self._image_collection.find({'type': 'image'})
+        temp = []
+        for document in await cursor.to_list(length = None):
+            temp.append(document);     
+        return temp
+        
+    async def do_find_telemetry(self): 
         cursor = self._telemetry_collection.find({'type': 'telemetry'})
-        #telemetry_arr = []
-        for document in await cursor.to_list(length = 100):
-            self.telemetry_array_from_db.append(document);
-            #pprint.pprint(document)
+        temp = []
+        for document in await cursor.to_list(length = None):
+            temp.append(document);
+        return temp
+        
         
         
 
@@ -71,3 +74,4 @@ telemetry = {
 
 
 
+#event loop.starttask
