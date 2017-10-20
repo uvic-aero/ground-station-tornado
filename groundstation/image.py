@@ -1,4 +1,6 @@
 import uuid
+from .database import database
+import asyncio
 
 # Basic concept of an image
 # Can have image data received over the network or loaded from the filesystem,
@@ -28,4 +30,12 @@ class Image:
 
     # (over)write this image data to database
     def persist_to_database(self):
-        pass
+        document = {
+        'type' : 'image_object',
+        'uuid' : str(self._uuid),
+        'timestamp' : self._timestamp, 
+        'file_location' : self.file_location,
+        'telemetry_id' : self.telemetry._id
+        }
+        result = self.loop.run_until_complete(database.insert_image_telemetry(document))
+        

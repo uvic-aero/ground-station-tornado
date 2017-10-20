@@ -26,12 +26,10 @@ class Database:
 
     async def add_image(self, document): 
         result = await self._image_collection.insert_one(document)
-        print('result %s' % repr(result.inserted_id))
       
     async def insert_telemetry(self, document): 
         result = await self._telemetry_collection.insert_one(document)
-        print('result %s' % repr(result.inserted_id))
-    
+
     async def do_find_images(self): 
         cursor = self._image_collection.find({'type': 'image'})
         temp = []
@@ -46,32 +44,4 @@ class Database:
             temp.append(document);
         return temp
         
-        
-        
-
-        
-
-#Test Code
 database = Database()
-image = {
-    'type': 'image',
-    'width': 671,
-    'height': 475,
-    'url': 'test'
-}
-telemetry = {
-    'type': 'telemetry',
-    'lat': 45.709,
-    'lon': 104.3467
-}
-#loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.add_image(image))
-#loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.do_find())
-
-#loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.insert_telemetry(telemetry))
-
-
-
-#event loop.starttask
