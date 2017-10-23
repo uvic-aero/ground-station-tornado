@@ -32,3 +32,5 @@ class ImageService:
         self._images.append(image)
 
 image_service = ImageService()
+
+print (image_service._images)
