@@ -12,7 +12,14 @@ class TelemetryService:
 
     # Search self._telemetry to find a GPS location nearest to the timestamp parameter
     def find_nearest_telemetry(self, timestamp):
-        pass
+        timeList = []
+        for d in self._telemetry:
+            timeList.append(d['timestamp'])
+
+        nearest = min(timeList, key=lambda x:abs(x-timestamp))
+        for n in range(0, len(self._telemetry)):
+            if self._telemetry[n]['timestamp'] == nearest:
+                return self._telemetry[n]
 
     # Add a new timestamp -> GPS mapping
     # Persist telemetry to database
