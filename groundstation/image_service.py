@@ -33,4 +33,4 @@ class ImageService:
 
 image_service = ImageService()
 
-print (image_service._images)
+print(image_service._images)

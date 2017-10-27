@@ -7,7 +7,7 @@ import asyncio
 # telemetry data that's been matched in, and the idea of a persistent file location
 class Image:
     def __init__(self, uuid=None):
-
+        self.loop = asyncio.get_event_loop()
         self._uuid = uuid.uuid4() if uuid is None else uuid # Unique identifier used by database. If it does not exist, create it
         self.jpeg_data = None
         self.file_location = None
@@ -35,7 +35,8 @@ class Image:
         'uuid' : str(self._uuid),
         'timestamp' : self._timestamp, 
         'file_location' : self.file_location,
-        'telemetry_id' : self.telemetry._id
+        'telemetry_id' : telemetry._uuid
         }
-        result = self.loop.run_until_complete(database.insert_image_telemetry(document))
-        
+        self.loop.run_until_complete(database.insert_image_telemetry(document))
+img = Image()
+img.persist_to_database()
