@@ -11,8 +11,6 @@ class Database:
         self._db = self._client.get_database('aero')
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
-        #self.telemetry_array_from_db = []
-        #self.image_array_from_db = []
         return None
     
         
