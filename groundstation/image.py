@@ -38,5 +38,3 @@ class Image:
         'telemetry_id' : telemetry._uuid
         }
         self.loop.run_until_complete(database.insert_image_telemetry(document))
-img = Image()
-img.persist_to_database()
