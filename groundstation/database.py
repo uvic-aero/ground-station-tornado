@@ -4,10 +4,6 @@ import asyncio
 import pprint
 import time
 
-#delete after testing
-import uuid
-
-
 class Database:
     def __init__(self):
         self._client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
@@ -16,8 +12,6 @@ class Database:
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
         self._image_tag_collection = self._db.get_collection('image_tags')
-        #self.telemetry_array_from_db = []
-        #self.image_array_from_db = []
         return None
     
         
@@ -66,22 +60,4 @@ class Database:
         return temp
         
         
-
-        
-
-#Test Code
 database = Database()
-
-#x = database.loop.run_until_complete(database.find_all_image_tags())
-#print(x)
-
-
-#loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.do_find())
-
-#loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.insert_telemetry(telemetry))
-
-
-
-#event loop.starttask
