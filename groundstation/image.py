@@ -25,6 +25,9 @@ class Image:
         self.jpeg_data.save(location)
         self.file_location = location
 
+    # Garbage collect unneeded image data to save memory
+    def discard_jpeg_data(self):
+        self.jpeg_data = None
 
     # Use telemetry service to find telemetry for this image/timestamp
     # The timestamp in this image must exist and be valid
