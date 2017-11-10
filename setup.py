@@ -20,7 +20,8 @@ setup(name='groundstation',
       install_requires=[
           'pillow',
           'tornado',
-          'motor'
+          'motor',
+          'requests'
       ],
       entry_points="""
       # -*- Entry points: -*-

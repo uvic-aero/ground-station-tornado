@@ -42,6 +42,16 @@ class Database:
         for document in await cursor.to_list(length = None):
             temp.append(document);     
         return temp
+
+    # If image_id is a valid image id, then return the next 'count' images that have a timestamp
+    # less than the image referenced by image_id
+    # The purpose is for pagination. Assuming sorted by timestamp greatest to least, 
+    # if we load the newest 20 images, then this function would allow us to load the next 20 images
+    # that come after the last image in the previous set. Newer images have a larger timestamp
+    # This requires sorting by timestamp, searching for images with lesser timestamp than image_id, and limiting
+    # the return to 'count' number of results
+    async def get_next_images(self, image_id, count):
+        pass
         
     #returns all telemetry objects in telemetry collection
     async def do_find_telemetry(self): 
