@@ -1,4 +1,4 @@
-from database import database
+from .database import database
 from motor import motor_asyncio
 import asyncio
 
@@ -33,10 +33,9 @@ class TelemetryService:
 
     # Load all of the persisted telemetry data
     def load_from_database(self): #set to print right now
-        #self.loop.run_until_complete(database.do_find_telemetry())
         self._telemetry = self._telemetry + self.loop.run_until_complete(database.do_find_telemetry())
 
     # Persist telemetry object to DB
     def persist_single_to_database(self, telemetry):
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(database.insert_telemetry(test_telemetry))
+        loop.run_until_complete(database.insert_telemetry(telemetry))

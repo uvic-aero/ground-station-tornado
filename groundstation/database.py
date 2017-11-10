@@ -11,7 +11,10 @@ class Database:
         self._db = self._client.get_database('aero')
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
+<<<<<<< HEAD
         self._image_tag_collection = self._db.get_collection('image_tags')
+=======
+>>>>>>> crazy-experiment
         return None
     
         
@@ -25,14 +28,18 @@ class Database:
 
     async def add_image(self, document): 
         result = await self._image_collection.insert_one(document)
-        print('result %s' % repr(result.inserted_id))
+        #print('result %s' % repr(result.inserted_id))
       
     async def insert_telemetry(self, document): 
         result = await self._telemetry_collection.insert_one(document)
-        print('result %s' % repr(result.inserted_id))
+        #print('result %s' % repr(result.inserted_id))
+
+    async def insert_image_telemetry(self, document):
+        result = await self._image_collection.insert_one(document)
+
     
     async def do_find_images(self): 
-        cursor = self._image_collection.find({'type': 'image'})
+        cursor = self._image_collection.find({'type': 'image_object'})
         temp = []
         for document in await cursor.to_list(length = None):
             temp.append(document);     
@@ -44,6 +51,7 @@ class Database:
         for document in await cursor.to_list(length = None):
             temp.append(document);
         return temp
+<<<<<<< HEAD
 
 #for important images 
     async def insert_image_tag(self, tag_id):
@@ -59,5 +67,7 @@ class Database:
             temp.append(document);
         return temp
         
+=======
+>>>>>>> crazy-experiment
         
 database = Database()
