@@ -1,20 +1,12 @@
 import uuid 
 import asyncio
-from database import database
+from .database import database
 
-
-#add image id to collection
-#remove id form collection
-
-#get all the image id's in important image collection
-#DOCUMENTATION: gets all image_tags from data base on initialization and
+#DOCUMENT: gets all image_tags from data base on initialization and
 #or when the get all image tags is called
 #add_image_tag(uuid) sends image tag to db
 #remove_image_tag(uuid) takes the uuid and removes all images with 
 #that id from the db.
-
-#image_tag.loop.run_until_complete(image_tag.add_image_tag(1234567))
-#image_tag.loop.run_until_complete(image_tag.remove_image_tag(1234567))
 
 
 class ImageTag:
@@ -34,4 +26,3 @@ class ImageTag:
 
 
 image_tag = ImageTag()
-
