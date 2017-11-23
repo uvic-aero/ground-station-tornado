@@ -42,8 +42,8 @@ class Image:
         document = {
         'type' : 'image_object',
         'uuid' : str(self._uuid),
-        'timestamp' : self._timestamp, 
+        'timestamp' : self.timestamp, 
         'file_location' : self.file_location,
-        'telemetry_id' : telemetry._uuid
+        'telemetry_id' : self.telemetry._uuid if self.telemetry is not None else None
         }
         self.loop.run_until_complete(database.insert_image_telemetry(document))

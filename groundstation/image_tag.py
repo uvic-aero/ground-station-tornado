@@ -24,5 +24,8 @@ class ImageTag:
         temp = await database.find_all_image_tags()
         print(temp)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> crazy-imageTag-experiment
 image_tag = ImageTag()
