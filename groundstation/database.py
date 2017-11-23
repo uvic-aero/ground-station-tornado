@@ -11,6 +11,7 @@ class Database:
         self._db = self._client.get_database('aero')
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
+        self._telemetry_collection = self._db.get_collection('important_images')
         return None
     
         
@@ -24,11 +25,9 @@ class Database:
 
     async def add_image(self, document): 
         result = await self._image_collection.insert_one(document)
-        #print('result %s' % repr(result.inserted_id))
-      
+
     async def insert_telemetry(self, document): 
         result = await self._telemetry_collection.insert_one(document)
-        #print('result %s' % repr(result.inserted_id))
 
     async def insert_image_telemetry(self, document):
         result = await self._image_collection.insert_one(document)
@@ -39,6 +38,21 @@ class Database:
         temp = []
         for document in await cursor.to_list(length = None):
             temp.append(document);     
+        return temp
+
+
+#for important images 
+    async def insert_image_tag(self, tag_id):
+        result = await self._image_tag_collection.insert({'type': 'image_tag', 'uuid': tag_id})
+
+    async def remove_image_tag(self, tag_id):
+        result = await self._image_tag_collection.remove({'type': 'image_tag', 'uuid': tag_id})
+
+    async def find_all_image_tags(self): 
+        cursor = self._image_tag_collection.find({'type': 'image_tag'})
+        temp = []
+        for document in await cursor.to_list(length = None):
+            temp.append(document);
         return temp
 
     # If image_id is a valid image id, then return the next 'count' images that have a timestamp
