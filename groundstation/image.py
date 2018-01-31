@@ -1,5 +1,5 @@
 import uuid
-from .database import database
+from .database import database #place period directly before first database on this line
 import asyncio
 from PIL import Image as PILImage
 
@@ -47,3 +47,4 @@ class Image:
         'telemetry_id' : self.telemetry._uuid if self.telemetry is not None else None
         }
         self.loop.run_until_complete(database.insert_image_telemetry(document))
+

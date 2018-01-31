@@ -8,7 +8,7 @@ from .database import database
 #remove_image_tag(uuid) takes the uuid and removes all images with 
 #that id from the db.
 
-
+#imageID timestamp of image
 class ImageTag:
     def __init__(self):
         self.loop = asyncio.get_event_loop()
@@ -22,10 +22,6 @@ class ImageTag:
     
     async def get_image_tags(self):
         temp = await database.find_all_image_tags()
-        print(temp)
+        return temp
 
-<<<<<<< HEAD
-
-=======
->>>>>>> crazy-imageTag-experiment
 image_tag = ImageTag()
