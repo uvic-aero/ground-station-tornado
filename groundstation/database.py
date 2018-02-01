@@ -38,7 +38,7 @@ class Database:
 
     # returns all "image_objects" in the image collection
     async def do_find_images(self):
-        cursor = self._image_collection.find({'type': 'image_object'})
+        cursor = self._image_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append(document)
@@ -61,7 +61,7 @@ class Database:
         # check for cursor existince
         if cursor == None:
             return
-        
+    
         result = await self._image_collection.find({'timestamp': {'$not': {'$gt': cursor['timestamp']}}}, sort=[('timestamp', pymongo.DESCENDING)], limit=count).to_list(length=None)
         pprint.pprint(result)
         return result
@@ -78,15 +78,15 @@ class Database:
 
     # write new image tag to image_tag collection: params(uuid)
     async def insert_image_tag(self, tag_id):
-        result = await self._image_tag_collection.insert({'type': 'image_tag', 'uuid': tag_id})
+        result = await self._image_tag_collection.insert({'uuid': tag_id})
 
     # remove specified image tag from image_tag collection: params(uuid)
     async def remove_image_tag(self, tag_id):
-        result = await self._image_tag_collection.remove({'type': 'image_tag', 'uuid': tag_id})
+        result = await self._image_tag_collection.remove({'uuid': tag_id})
 
     # return a list of all image_tag objects from image_tag collection
     async def find_all_image_tags(self):
-        cursor = self._image_tag_collection.find({'type': 'image_tag'})
+        cursor = self._image_tag_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append(document)
@@ -94,15 +94,16 @@ class Database:
 
 
 database = Database()
-# Test code...
-document = {
-    'type': 'image',
-    'width': 671,
-    'height': 475,
-    'url': 'http://stories.barkpost.com/wp-content/uploads/2015/04/husky.jpg',
-    'image_id': 10,
-    'timestamp': time.time()
-}
+
 loop = asyncio.get_event_loop()
-# loop.run_until_complete(database.add_image(document))
-loop.run_until_complete(database.get_next_images(count = 3, _id = '5a17825b399d9250423c06c3'))
+#loop.run_until_complete(database.get_next_images(count = 3, _id = '5a17825b399d9250423c06c3'))
+loop.run_until_complete(database.find_all_image_tags())
+
+#To Test
+#1. find images.
+#
+#
+#
+#
+#
+#
