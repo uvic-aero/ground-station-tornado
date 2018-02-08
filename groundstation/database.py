@@ -73,7 +73,7 @@ class Database:
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append(document)
-        pprint.pprint(temp)
+        return temp
 
 
 
