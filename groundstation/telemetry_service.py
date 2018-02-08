@@ -29,7 +29,7 @@ class TelemetryService:
         # Append
         self._telemetry.append(telemetry)
         # Then add it to database
-        self.persist_single_to_database(telemetry)
+        #self.persist_single_to_database(telemetry)
 
     # Load all of the persisted telemetry data
     def load_from_database(self): #set to print right now

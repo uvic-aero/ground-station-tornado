@@ -32,9 +32,10 @@ test_images = [{
 }]
 
 test_telemetry = {
-    'type': 'telemetry',
+    
     'lat': 45.709,
-    'lon': 104.3467
+    'lon': 104.3467,
+    'timestamp': 0
 }
 
 class Simulator:

@@ -1,4 +1,6 @@
 from .udp_handler import UDPHandler
+import json
+from .telemetry_service import telemetry_service
 
 class GPSReceiver(UDPHandler):
     def __init__(self):
@@ -6,7 +8,6 @@ class GPSReceiver(UDPHandler):
 
     # What to do when we receive GPS data
     async def data_received(self, data, addr):
- 
+        telemetry = json.loads(data)
          # Call telemetry service
-
-        pass
+        telemetry_service.add_telemetry(telemetry)
