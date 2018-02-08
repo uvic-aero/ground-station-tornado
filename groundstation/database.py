@@ -66,6 +66,17 @@ class Database:
         pprint.pprint(result)
         return result
 
+#Pass to sets of coordinate to retreive an group of images
+    async def find_by_coordinates(self, coordinate_a, coordinate_b):
+        #coord_a is bottom left | coord_b is upper right
+        cursor = self._image_collection.find({ 'location': { '$geoWithin':{ '$box': [ coordinate_a, coordinate_b ] } } })
+        temp = []
+        for document in await cursor.to_list(length=None):
+            temp.append(document)
+        pprint.pprint(temp)
+
+
+
     # returns all telemetry objects in telemetry collection
     async def do_find_telemetry(self):
         cursor = self._telemetry_collection.find({'type': 'telemetry'})
@@ -92,18 +103,15 @@ class Database:
             temp.append(document)
         return temp
 
-
 database = Database()
 
-loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.get_next_images(count = 3, _id = '5a17825b399d9250423c06c3'))
-loop.run_until_complete(database.find_all_image_tags())
+#coord_a = [-73.9376, 40.8302]
+#coord_b = [-73.9375, 40.8304]
+
+#loop = asyncio.get_event_loop()
+#loop.run_until_complete(database.find_by_coordinates(coord_a, coord_b))
 
 #To Test
 #1. find images.
 #
-#
-#
-#
-#
-#
+
