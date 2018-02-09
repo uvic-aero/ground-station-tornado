@@ -39,3 +39,5 @@ class TelemetryService:
     def persist_single_to_database(self, telemetry):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(database.insert_telemetry(telemetry))
+
+telemetry_service = TelemetryService()
