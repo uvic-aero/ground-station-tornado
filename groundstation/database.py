@@ -1,4 +1,5 @@
 from motor import motor_asyncio
+from tornado import ioloop
 import motor
 import asyncio
 import pprint
@@ -9,21 +10,21 @@ from bson.objectid import ObjectId
 
 class Database:
     def __init__(self):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(
-            'localhost', 27017)
-        self.loop = asyncio.get_event_loop()
+        # Configure motor to use tornado's native asyncio loop
+        self._client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, io_loop=ioloop.IOLoop.instance().asyncio_loop)
         self._db = self._client.get_database('aero')
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
         self._image_tag_collection = self._db.get_collection('image_tags')
         return None
-
-    @property
-    async def image_collection(self):
+    
+        
+    @property 
+    def image_collection(self):
         return self._image_collection
 
     @property
-    async def telemetry_collection(self):
+    def telemetry_collection(self):
         return self._telemetry_collection
 
     # write new image to image collection: params(image object)

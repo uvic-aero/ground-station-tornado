@@ -1,15 +1,18 @@
+
+from tornado import ioloop
+
+# Preconfigure global asyncio loop
+ioloop.IOLoop.configure('tornado.platform.asyncio.AsyncIOLoop')
+
+# Import groundstation services
 from .websocket import websocket
 from .gps_receiver import GPSReceiver
 from .image_receiver import ImageReceiver
 from .api import API
 from .simulator import Simulator
 
-from tornado import ioloop
 import sys
 import signal
-
-# Force tornado to use native asyncio event loop
-ioloop.IOLoop.configure('tornado.platform.asyncio.AsyncIOLoop')
 
 class GroundStation:
 
