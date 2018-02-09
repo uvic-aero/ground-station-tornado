@@ -67,14 +67,16 @@ class Database:
         pprint.pprint(result)
         return result
 
-#Pass to sets of coordinate to retreive an group of images
-    async def find_by_coordinates(self, coordinate_a, coordinate_b):
+    #Pass to sets of coordinate to retreive an group of images
+    async def find_by_coordinates(self, coordinate_a = None, coordinate_b = None, callback = None):
         #coord_a is bottom left | coord_b is upper right
+        if(coordinate_a == None or coordinate_b == None):
+            return('Coordinate parameter is missing')
         cursor = self._image_collection.find({ 'location': { '$geoWithin':{ '$box': [ coordinate_a, coordinate_b ] } } })
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append(document)
-        return temp
+        callback(temp)
 
 
 
@@ -110,8 +112,8 @@ database = Database()
 #coord_b = [-73.9375, 40.8304]
 
 #loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.find_by_coordinates(coord_a, coord_b))
-
+#x  = loop.run_until_complete(database.find_by_coordinates())
+#pprint.pprint(x)
 #To Test
 #1. find images.
 #
