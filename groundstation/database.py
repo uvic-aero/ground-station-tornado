@@ -28,7 +28,7 @@ class Database:
         return self._telemetry_collection
 
     # write new image to image collection: params(image object)
-    async def add_image(self, document):
+    async def insert_image(self, document):
         result = await self._image_collection.insert_one(document)
 
     async def insert_telemetry(self, document):
@@ -75,8 +75,9 @@ class Database:
         cursor = self._image_collection.find({ 'location': { '$geoWithin':{ '$box': [ coordinate_a, coordinate_b ] } } })
         temp = []
         for document in await cursor.to_list(length=None):
-            temp.append(document)
-        callback(temp)
+            temp.append({**document, **{'_id': str(document['_id'])}})
+        x = {'result':temp}
+        callback(x)
 
 
 
@@ -112,8 +113,8 @@ database = Database()
 #coord_b = [-73.9375, 40.8304]
 
 #loop = asyncio.get_event_loop()
-#x  = loop.run_until_complete(database.find_by_coordinates())
-#pprint.pprint(x)
+#loop.run_until_complete(database.find_by_coordinates(coord_a, coord_b))
+
 #To Test
 #1. find images.
 #

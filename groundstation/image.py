@@ -1,7 +1,7 @@
 import uuid
 from .database import database #place period directly before first database on this line
 import asyncio
-from PIL import Image as PILImage
+#from PIL import Image as PILImage
 
 
 # Basic concept of an image
