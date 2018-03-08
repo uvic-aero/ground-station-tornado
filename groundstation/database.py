@@ -16,6 +16,8 @@ class Database:
         self._image_collection = self._db.get_collection('images')
         self._telemetry_collection = self._db.get_collection('telemetry')
         self._image_tag_collection = self._db.get_collection('image_tags')
+        self._log_collection = self._db.get_collection('logs')
+
         return None
     
         
@@ -106,16 +108,12 @@ class Database:
         for document in await cursor.to_list(length=None):
             temp.append(document)
         return temp
+    
+    async def insert_log(self, document):
+        msg = document["message"]
+        sys = document['system']
+        ts = document['timestamp']
+        result = await self._log_collection.insert({'Time Stamp': ts, 'Message': msg, 'System': sys})
 
 database = Database()
-
-#coord_a = [-73.9376, 40.8302]
-#coord_b = [-73.9375, 40.8304]
-
-#loop = asyncio.get_event_loop()
-#loop.run_until_complete(database.find_by_coordinates(coord_a, coord_b))
-
-#To Test
-#1. find images.
-#
 
