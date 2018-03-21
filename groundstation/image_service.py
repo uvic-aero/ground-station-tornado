@@ -35,11 +35,12 @@ class ImageService:
         return None
 
     # If we receive a new image, store it & match telemetry
-    def add_new_image(self, jpeg, timestamp):
+    def add_new_image(self, timestamp, jpeg):
         
         image = Image()
         image.timestamp = timestamp
         image.jpeg_data = jpeg
+        image.timestamp = timestamp
         image.save_jpeg_to_filesystem()
         image.match_telemetry()
 
