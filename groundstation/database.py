@@ -47,6 +47,12 @@ class Database:
             temp.append(document)
         return temp
 
+
+    async def find_image_by_id(self, id):
+        result = self._image_collection.find({"_id": ObjectId(id)})
+        print(result)
+        return result
+
     # If image_id is a valid image id, then return the next 'count' images that have a timestamp
     # less than the image referenced by image_id
     # The purpose is for pagination. Assuming sorted by timestamp greatest to least,
@@ -116,4 +122,5 @@ class Database:
         result = await self._log_collection.insert({'Time Stamp': ts, 'Message': msg, 'System': sys})
 
 database = Database()
+
 
