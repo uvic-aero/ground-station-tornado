@@ -1,8 +1,9 @@
 import requests 
 import json
 import base64
-from image_service import image_service
+from ..image_service import image_service
 from tornado import web 
+from ..database import database
 
 
 class ImagesHandler (web.RequestHandler):
@@ -14,7 +15,8 @@ class ImagesHandler (web.RequestHandler):
 		image_service.add_new_image(timestamp,image)
 
 	def get(self):
-		pass
+		Allimages = database.do_find_images()
+		self.write ({'images': Allimages})
 
 class ImagesByIdHandler (web.RequestHandler):
 	def post(self):

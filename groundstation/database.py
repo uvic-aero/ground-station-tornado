@@ -30,14 +30,12 @@ class Database:
         return self._telemetry_collection
 
     # write new image to image collection: params(image object)
-    async def insert_image(self, document):
+    async def insert_image(self, document, callback):
         result = await self._image_collection.insert_one(document)
+        callback(str(result.inserted_id))
 
     async def insert_telemetry(self, document):
         result = await self._telemetry_collection.insert_one(document)
-
-    async def insert_image_telemetry(self, document):
-        result = await self._image_collection.insert_one(document)
 
     # returns all "image_objects" in the image collection
     async def do_find_images(self):
