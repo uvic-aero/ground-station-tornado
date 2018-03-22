@@ -43,7 +43,7 @@ class ImageService:
         image.timestamp = timestamp
         image.persist_to_database(self._add_image_callback)
 
-
+    # If image successfully inserted, save the id & data to disk
     def _add_image_callback(self, image, id):
 
         image.uuid = id

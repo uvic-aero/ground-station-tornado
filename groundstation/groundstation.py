@@ -12,7 +12,9 @@ from .api import API
 from .simulator import Simulator
 
 import sys
+import os
 import signal
+import stat
 
 class GroundStation:
 
@@ -35,6 +37,9 @@ class GroundStation:
     def start(self):
 
         print("Starting ground station")
+
+        if not os.path.exists('images'):
+            os.makedirs('images')
         
         self._gps_receiver.start()
         self._websocket.start(24000)
