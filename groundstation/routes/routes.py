@@ -4,9 +4,11 @@ import tornado.ioloop
 import tornado.web
 import asyncio
 from .log_handler import LogHandler
+from .images import ImagesHandler
 
 routes = [
     (r"/", IndexHandler),
+    (r"/images", ImagesHandler),
     (r"/images/by_coordinates", ImageByCoordinateHandler),
     (r"/logs", LogHandler)
 ]

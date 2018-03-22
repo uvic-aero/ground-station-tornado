@@ -10,7 +10,7 @@ import asyncio
 class Image:
     def __init__(self, uuid_param=None):
         self.loop = asyncio.get_event_loop()
-        #self._uuid = uuid.uuid4() if uuid_param is None else uuid_param  # Unique identifier used by database. If it does not exist, create it
+        self.uuid = None
         self.jpeg_data = None
         self.file_location = None
         self.timestamp = None
@@ -19,14 +19,16 @@ class Image:
     # Use the filesystem location to open this image
     # File location must exist
     def load_jpeg_from_filesystem(self):  # typo
-        self.jpeg_data = PILImage.open(self.file_location)
+        with open(self.file_location) as f:
+            self.jpeg_data = f.read()
 
     # Save jpeg data in memory to the filesystem & record file location
     # Save to './images/{self._uuid}.jpg'
     def save_jpeg_to_filesystem(self):
-        location = "./images/" + str(self._uuid) + ".jpg"
-        self.jpeg_data.save(location)
-        self.file_location = location
+        self.file_location = "./images/" + str(self.uuid) + ".jpg"
+        print('Saving new image: %s' % self.file_location)
+        with open(self.file_location, 'wb') as f:
+            f.write(self.jpeg_data)
 
     # Garbage collect unneeded image data to save memory
     def discard_jpeg_data(self):
@@ -38,11 +40,12 @@ class Image:
         pass
 
     # (over)write this image data to database
-    def persist_to_database(self):
+    def persist_to_database(self, callback):
         document = {
-        'timestamp' : self.timestamp, 
-        'file_location' : self.file_location,
-        'telemetry_id' : self.telemetry._uuid if self.telemetry is not None else None
+            'timestamp' : self.timestamp, 
+            'file_location' : self.file_location,
+            'telemetry_id' : self.telemetry._uuid if self.telemetry is not None else None
         }
-        self.loop.run_until_complete(database.insert_image_telemetry(document))
+
+        self.loop.create_task(database.insert_image(document, lambda id: callback(self, id)))
 
