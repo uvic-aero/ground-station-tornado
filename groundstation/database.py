@@ -50,7 +50,6 @@ class Database:
 
     async def find_image_by_id(self, id):
         result = self._image_collection.find({"_id": ObjectId(id)})
-        print(result)
         return result
 
     # If image_id is a valid image id, then return the next 'count' images that have a timestamp
@@ -72,7 +71,7 @@ class Database:
             return
     
         result = await self._image_collection.find({'timestamp': {'$not': {'$gt': cursor['timestamp']}}}, sort=[('timestamp', pymongo.DESCENDING)], limit=count).to_list(length=None)
-        pprint.pprint(result)
+        #pprint.pprint(result)
         return result
 
     #Pass to sets of coordinate to retreive an group of images
@@ -123,4 +122,6 @@ class Database:
 
 database = Database()
 
+loop = asyncio.get_event_loop()
+loop.create_task(database.do_find_images())
 
