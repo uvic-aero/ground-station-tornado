@@ -34,16 +34,19 @@ class Database:
         result = await self._image_collection.insert_one(document)
         callback(str(result.inserted_id))
 
+    async def update_image(self, image_id, document):
+        await self._image_collection.update_one({'_id': ObjectId(image_id)}, document)
+
     async def insert_telemetry(self, document):
         result = await self._telemetry_collection.insert_one(document)
 
     # returns all "image_objects" in the image collection
-    async def do_find_images(self):
+    async def do_find_images(self, callback):
         cursor = self._image_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            temp.append(document)
-        return temp
+            temp.append({**document, **{'_id': str(document['_id'])}})
+        callback(temp)
 
 
     async def find_image_by_id(self, id):

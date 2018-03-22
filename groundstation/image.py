@@ -25,10 +25,12 @@ class Image:
     # Save jpeg data in memory to the filesystem & record file location
     # Save to './images/{self._uuid}.jpg'
     def save_jpeg_to_filesystem(self):
-        self.file_location = "./images/" + str(self.uuid) + ".jpg"
+        self.file_location = "images/" + str(self.uuid) + ".jpg"
         print('Saving new image: %s' % self.file_location)
         with open(self.file_location, 'wb') as f:
             f.write(self.jpeg_data)
+
+        self.loop.create_task(database.update_image(self.uuid, {'$set': {'file_location': self.file_location}}))
 
     # Garbage collect unneeded image data to save memory
     def discard_jpeg_data(self):
