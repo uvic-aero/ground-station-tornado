@@ -19,7 +19,6 @@ class Database:
         self._log_collection = self._db.get_collection('logs')
 
         return None
-    
         
     @property 
     def image_collection(self):
@@ -72,7 +71,6 @@ class Database:
             return
     
         result = await self._image_collection.find({'timestamp': {'$not': {'$gt': cursor['timestamp']}}}, sort=[('timestamp', pymongo.DESCENDING)], limit=count).to_list(length=None)
-        #pprint.pprint(result)
         return result
 
     #Pass to sets of coordinate to retreive an group of images
@@ -84,18 +82,15 @@ class Database:
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append({**document, **{'_id': str(document['_id'])}})
-        x = {'result':temp}
-        callback(x)
-
-
+        callback({'result': temp})
 
     # returns all telemetry objects in telemetry collection
-    async def do_find_telemetry(self):
+    async def do_find_telemetry(self, callback):
         cursor = self._telemetry_collection.find({'type': 'telemetry'})
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append(document)
-        return temp
+        callback(temp)
 
     #----important images----#
 
@@ -122,7 +117,3 @@ class Database:
         result = await self._log_collection.insert({'Time Stamp': ts, 'Message': msg, 'System': sys})
 
 database = Database()
-
-#loop = asyncio.get_event_loop()
-#loop.create_task(database.do_find_images())
-

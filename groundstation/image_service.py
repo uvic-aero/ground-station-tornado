@@ -1,28 +1,34 @@
 from .database import database
 from .image import Image
-from motor import motor_asyncio
-import asyncio
+from tornado import ioloop
 
 class ImageService:
 
     def __init__(self):
         self._images = [] # List of Image instances
-        self.loop = asyncio.get_event_loop()
+        self.loop = ioloop.IOLoop.instance().asyncio_loop
+
+    def start(self):
+        print("Starting image service")
         self.load_images_from_database()
-        
+
     # Access database to load all image metadata
     def load_images_from_database(self):
         try:
-            self._images = self.loop.run_until_complete(database.do_find_images())
+            self.loop.create_task(database.do_find_images(self._load_images_callback))
         except:
-            print("No images available")        
+            print("No images loaded from database")
+
+    def _load_images_callback(self, images):
+        print("Loaded %s initial images from database" % len(images))
+        self._images = self._images + images
 
     # Find an image in the list using the uuid
     # If it does not exist, search the database and return it
     # If still not found, return None
     # Ensure that the jpg data for the image is loaded
     def get_image_by_id(self, uuid):
-        image = next((img for img in self._images if img._uuid == uuid), None)
+        image = next((img for img in self._images if img.uuid == uuid), None)
 
         if image is not None:
             if image.jpeg_data is None:
@@ -36,7 +42,7 @@ class ImageService:
 
     # If we receive a new image, store it & match telemetry
     def add_new_image(self, timestamp, jpeg):
-        
+
         image = Image()
         image.timestamp = timestamp
         image.jpeg_data = jpeg

@@ -10,11 +10,13 @@ from .gps_receiver import GPSReceiver
 from .image_receiver import ImageReceiver
 from .api import API
 from .simulator import Simulator
+from .image_service import image_service
 
 import sys
 import os
 import signal
 import stat
+import asyncio
 
 class GroundStation:
 
@@ -45,6 +47,7 @@ class GroundStation:
         self._websocket.start(24000)
         self._api.start(24002)
         self._image_receiver.start()
+        image_service.start()
 
         # Handle interruption events
         signal.signal(signal.SIGINT, self.signal_handler)

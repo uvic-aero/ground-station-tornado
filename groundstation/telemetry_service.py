@@ -9,6 +9,7 @@ class TelemetryService:
         # Ex: [ { 'lat': 0', 'lon': 0, 'timestamp:' 0, '_id': 0 } ]
         self.loop = asyncio.get_event_loop()
         self._telemetry = []
+        self.load_from_database()
 
     # Search self._telemetry to find a GPS location nearest to the timestamp parameter
     def find_nearest_telemetry(self, timestamp):
@@ -33,11 +34,14 @@ class TelemetryService:
 
     # Load all of the persisted telemetry data
     def load_from_database(self): #set to print right now
-        self._telemetry = self._telemetry + self.loop.run_until_complete(database.do_find_telemetry())
+        self.loop.create_task(database.do_find_telemetry(self._load_from_database_callback))
+
+    def _load_from_database_callback(self, telemetry):
+        self._telemetry = self._telemetry + telemetry
 
     # Persist telemetry object to DB
     def persist_single_to_database(self, telemetry):
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(database.insert_telemetry(telemetry))
+        loop.create_task(database.insert_telemetry(telemetry))
 
 telemetry_service = TelemetryService()
