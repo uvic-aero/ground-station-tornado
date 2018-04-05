@@ -49,9 +49,9 @@ class Database:
         callback(temp)
 
 
-    async def find_image_by_id(self, id):
-        result = self._image_collection.find({"_id": ObjectId(id)})
-        return result
+    async def find_image_by_id(self, id, callback):
+        result = self._image_collection.find_one({"_id": ObjectId(id)})
+        callback(result)
 
     # If image_id is a valid image id, then return the next 'count' images that have a timestamp
     # less than the image referenced by image_id
@@ -123,6 +123,6 @@ class Database:
 
 database = Database()
 
-loop = asyncio.get_event_loop()
-loop.create_task(database.do_find_images())
+#loop = asyncio.get_event_loop()
+#loop.create_task(database.do_find_images())
 

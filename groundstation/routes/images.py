@@ -23,9 +23,13 @@ class ImagesHandler (web.RequestHandler):
 			self.finish()
 
 class ImagesByIdHandler (web.RequestHandler):
-	def post(self):
-		pass
+	@web.asynchronous
+	def post(self, id):
+		asyncio.get_event_loop().create_task(database.find_image_by_id(id, self.image_result))
 
+	def image_result(self, image):
+			self.write (image)
+			self.finish()
 
 class ImagesNextHandler (web.RequestHandler):
 	def post(self):
