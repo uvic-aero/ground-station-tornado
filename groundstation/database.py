@@ -28,6 +28,11 @@ class Database:
     def telemetry_collection(self):
         return self._telemetry_collection
 
+
+    # Prepare for returning as json; convert objectid
+    def _transform_json(self, document):
+        return {**document, **{'_id': str(document['_id'])}}
+
     # write new image to image collection: params(image object)
     async def insert_image(self, document, callback):
         result = await self._image_collection.insert_one(document)
@@ -86,11 +91,29 @@ class Database:
 
     # returns all telemetry objects in telemetry collection
     async def do_find_telemetry(self, callback):
-        cursor = self._telemetry_collection.find({'type': 'telemetry'})
+        cursor = self._telemetry_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
             temp.append(document)
         callback(temp)
+
+    async def get_nearest_telemetry(self, timestamp, callback):
+
+        cursor = self._telemetry_collection.aggregate([
+            {'$project': {'diff': {'$abs': {'$subtract': [timestamp, '$timestamp']}}, 'timestamp': '$timestamp', 'lat': '$lat', 'lon': '$lon','alt': '$alt' }},
+            {'$sort': {'diff': 1}},
+            {'$limit': 1}
+        ])
+        await cursor.fetch_next
+        callback(cursor.next_object())
+
+    async def get_latest_telemetry_callback(self, callback):
+        doc = await self._telemetry_collection.find_one({ "$query":{}, "$orderby":{ "_id": -1 }})
+        callback(self._transform_json(doc))
+
+    async def get_latest_telemetry(self):
+        return await self._telemetry_collection.find_one({ "$query":{}, "$orderby":{ "_id": -1 }})
+
 
     #----important images----#
 

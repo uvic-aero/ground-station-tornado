@@ -39,14 +39,25 @@ class Image:
     # Use telemetry service to find telemetry for this image/timestamp
     # The timestamp in this image must exist and be valid
     def match_telemetry(self):
-        pass
+        self.loop.create_task(database.get_nearest_telemetry(self.timestamp, self._found_telemetry_callback))
+
+    def _found_telemetry_callback(self, telemetry):
+        print("found telemetry")
+        print(telemetry)
+        self.telemetry = telemetry
+        self.persist_to_database(self._add_image_callback)
+
+    def _add_image_callback(self, image, id):
+
+        self.uuid = id
+        self.save_jpeg_to_filesystem()
 
     # (over)write this image data to database
     def persist_to_database(self, callback):
         document = {
             'timestamp' : self.timestamp, 
             'file_location' : self.file_location,
-            'telemetry_id' : self.telemetry._uuid if self.telemetry is not None else None
+            'telemetry_id' : self.telemetry['_id'] if self.telemetry is not None else None
         }
 
         self.loop.create_task(database.insert_image(document, lambda id: callback(self, id)))

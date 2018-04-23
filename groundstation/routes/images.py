@@ -12,7 +12,7 @@ class ImagesHandler (web.RequestHandler):
 		timestamp = data ["timestamp"]
 		image = base64.b64decode(data ["image"])
 
-		image_service.add_new_image(timestamp,image)
+		image_service.add_new_image(timestamp, image)
 
 	@web.asynchronous
 	def get(self):
@@ -34,7 +34,6 @@ class ImagesByIdHandler (web.RequestHandler):
 class ImagesNextHandler (web.RequestHandler):
 	def post(self):
 		pass
-
 
 class ImagesTagHandler (web.RequestHandler):
 	def post(self):
