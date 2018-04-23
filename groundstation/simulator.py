@@ -1,5 +1,6 @@
 from .websocket import pubsub
 from tornado import ioloop
+from uuid import uuid4
 import socket
 import json
 import random
@@ -18,7 +19,7 @@ test_images = [{
     'type': 'image',
     'width': 880,
     'height': 564,
-    'url': 'http://static.boredpanda.com/blog/wp-content/uploads/2015/08/siberian-husky-dog-instagram-erica-tcogoeva-20.jpg'   
+    'url': 'http://static.boredpanda.com/blog/wp-content/uploads/2015/08/siberian-husky-dog-instagram-erica-tcogoeva-20.jpg'
 }, {
     'type': 'image',
     'width': 960,
@@ -57,7 +58,14 @@ class Simulator:
                 continue
             for sub in subscribers[type]:
                 print("Sending images")
-                sub.write_message(json.dumps(test_images[random.randint(0, len(test_images)-1)]))
+
+                # Select a random image
+                img = test_images[random.randint(0, len(test_images)-1)]
+
+                # Give each image a unique ID to be more realistic
+                img['_id'] = str(uuid4())
+
+                sub.write_message(json.dumps(img))
 
     def send_telemetry_webclient(self):
 
