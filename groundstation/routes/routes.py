@@ -6,7 +6,7 @@ import asyncio
 from .log_handler import LogHandler
 from .images import ImagesHandler, ImagesByIdHandler
 from .telemetry_handler import TelemetryHandler
-from .camera_handler import ZoomInHandler, ZoomOutHandler, CaptureStillHandler
+from .camera_handler import ZoomInHandler, ZoomOutHandler, CaptureStillHandler, ModeHandler, StatusHandler
 
 routes = [
     (r"/", IndexHandler),
@@ -17,5 +17,7 @@ routes = [
     (r"/telemetry", TelemetryHandler),
     (r"/camera/zoomin", ZoomInHandler),
     (r"/camera/zoomout", ZoomOutHandler),
-    (r"/camera/still", CaptureStillHandler)
+    (r"/camera/still", CaptureStillHandler),
+    (r"/camera/mode", ModeHandler),
+    (r"/camera/status", StatusHandler)
 ]
