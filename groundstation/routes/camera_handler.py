@@ -1,8 +1,8 @@
 from tornado import web
 import requests
 import json
-
-camera_url = "http://127.0.0.1:8000"
+import traceback
+from ..constants import camera_url
 
 class ZoomInHandler(web.RequestHandler):
 
@@ -83,13 +83,15 @@ class ModeHandler(web.RequestHandler):
         self.write({'error': 'camera not ready'})
 
     def post(self):
+      print('post')
       try:
         res = requests.post(camera_url + "/mode", json=json.loads(self.request.body), timeout=2)
-
+        print(res)
         self.set_status(res.status_code)
         self.write({'result': 'changed mode'})
       except Exception as e:
         print(e)
+        traceback.print_exc()
         self.write({'error': 'camera not ready'})
 
     def options(self):
