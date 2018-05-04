@@ -64,18 +64,26 @@ class Database:
     # that come after the last image in the previous set. Newer images have a larger timestamp
     # This requires sorting by timestamp, searching for images with lesser timestamp than image_id, and limiting
     # the return to 'count' number of results
-
-    async def get_next_images(self, _id = None, count = 3):
+    # New: Now pulls related telemetry document
+    async def get_next_images(self, _id = None, count = 10):
         if(_id == None):
-            cursor = await self._image_collection.find_one({})
+            cursor = await self._image_collection.find_one({}, sort=[('timestamp', pymongo.DESCENDING)])
         else: 
             cursor = await self._image_collection.find_one({"_id": ObjectId(_id)})
-        
+
         # check for cursor existince
         if cursor == None:
-            return
+            return []
     
         result = await self._image_collection.find({'timestamp': {'$not': {'$gt': cursor['timestamp']}}}, sort=[('timestamp', pymongo.DESCENDING)], limit=count).to_list(length=None)
+
+        telemetry_ids = [x['telemetry_id'] for x in result]
+
+        tel_result = await self._telemetry_collection.find({'_id': {'$in': telemetry_ids}}).to_list(length=None)
+
+        for res in result:
+            res['telemetry'] = next((x for x in tel_result if x['_id'] == res['telemetry_id']), None)
+
         return result
 
     #Pass to sets of coordinate to retreive an group of images
