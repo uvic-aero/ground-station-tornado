@@ -1,8 +1,6 @@
 import uuid
 from .database import database #place period directly before first database on this line
 import asyncio
-#from PIL import Image as PILImage
-
 
 # Basic concept of an image
 # Can have image data received over the network or loaded from the filesystem,
@@ -19,7 +17,7 @@ class Image:
     # Use the filesystem location to open this image
     # File location must exist
     def load_jpeg_from_filesystem(self):  # typo
-        with open(self.file_location) as f:
+        with open(self.file_location, 'rb') as f:
             self.jpeg_data = f.read()
 
     # Save jpeg data in memory to the filesystem & record file location
@@ -38,27 +36,22 @@ class Image:
 
     # Use telemetry service to find telemetry for this image/timestamp
     # The timestamp in this image must exist and be valid
-    def match_telemetry(self):
-        self.loop.create_task(database.get_nearest_telemetry(self.timestamp, self._found_telemetry_callback))
-
-    def _found_telemetry_callback(self, telemetry):
+    async def match_telemetry(self):
+        self.telemetry = await database.get_nearest_telemetry(self.timestamp)
         print("found telemetry")
-        print(telemetry)
-        self.telemetry = telemetry
-        self.persist_to_database(self._add_image_callback)
+        print(self.telemetry)
 
-    def _add_image_callback(self, image, id):
-
-        self.uuid = id
-        self.save_jpeg_to_filesystem()
+        return self.telemetry
 
     # (over)write this image data to database
-    def persist_to_database(self, callback):
+    async def persist_to_database(self):
         document = {
             'timestamp' : self.timestamp, 
             'file_location' : self.file_location,
             'telemetry_id' : self.telemetry['_id'] if self.telemetry is not None else None
         }
 
-        self.loop.create_task(database.insert_image(document, lambda id: callback(self, id)))
+        self.uuid = await database.insert_image(document)
+
+        self.save_jpeg_to_filesystem()
 

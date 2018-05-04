@@ -34,9 +34,9 @@ class Database:
         return {**document, **{'_id': str(document['_id'])}}
 
     # write new image to image collection: params(image object)
-    async def insert_image(self, document, callback):
+    async def insert_image(self, document):
         result = await self._image_collection.insert_one(document)
-        callback(str(result.inserted_id))
+        return result.inserted_id
 
     async def update_image(self, image_id, document):
         await self._image_collection.update_one({'_id': ObjectId(image_id)}, document)
@@ -54,7 +54,7 @@ class Database:
 
 
     async def find_image_by_id(self, id, callback):
-        result = self._image_collection.find_one({"_id": ObjectId(id)})
+        result = await self._image_collection.find_one({"_id": ObjectId(id)})
         callback(result)
 
     # If image_id is a valid image id, then return the next 'count' images that have a timestamp
@@ -97,7 +97,7 @@ class Database:
             temp.append(document)
         callback(temp)
 
-    async def get_nearest_telemetry(self, timestamp, callback):
+    async def get_nearest_telemetry(self, timestamp):
 
         cursor = self._telemetry_collection.aggregate([
             {'$project': {'diff': {'$abs': {'$subtract': [timestamp, '$timestamp']}}, 'timestamp': '$timestamp', 'lat': '$lat', 'lon': '$lon','alt': '$alt' }},
@@ -105,7 +105,7 @@ class Database:
             {'$limit': 1}
         ])
         await cursor.fetch_next
-        callback(cursor.next_object())
+        return cursor.next_object()
 
     async def get_latest_telemetry_callback(self, callback):
         doc = await self._telemetry_collection.find_one({ "$query":{}, "$orderby":{ "_id": -1 }})

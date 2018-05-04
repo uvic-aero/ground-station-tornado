@@ -1,53 +1,50 @@
 from .database import database
 from .image import Image
+from .websocket import pubsub
 from tornado import ioloop
+from .constants import groundstation_url
 
 class ImageService:
 
     def __init__(self):
-        self._images = [] # List of Image instances
         self.loop = ioloop.IOLoop.instance().asyncio_loop
 
     def start(self):
         print("Starting image service")
-        self.load_images_from_database()
-
-    # Access database to load all image metadata
-    def load_images_from_database(self):
-        try:
-            self.loop.create_task(database.do_find_images(self._load_images_callback))
-        except:
-            print("No images loaded from database")
-
-    def _load_images_callback(self, images):
-        print("Loaded %s initial images from database" % len(images))
-        self._images = self._images + images
-
-    # Find an image in the list using the uuid
-    # If it does not exist, search the database and return it
-    # If still not found, return None
-    # Ensure that the jpg data for the image is loaded
-    def get_image_by_id(self, uuid):
-        image = next((img for img in self._images if img.uuid == uuid), None)
-
-        if image is not None:
-            if image.jpeg_data is None:
-                image.load_from_filesystem()
-            return image
-        # TODO: Search database
-        else:
-            pass
-
-        return None
 
     # If we receive a new image, store it & match telemetry
-    def add_new_image(self, timestamp, jpeg):
+    async def add_new_image(self, timestamp, jpeg):
 
         image = Image()
         image.timestamp = timestamp
         image.jpeg_data = jpeg
-        image.timestamp = timestamp
-        image.match_telemetry()
+        await image.match_telemetry()
+        await image.persist_to_database()
+
+        print("done")
+        print(image.telemetry)
+
+    async def publish_image(self, image):
+
+        subscribers = pubsub.subscriptions.get_subscribers()
+
+        for type in subscribers:
+            if type != 'images':
+                continue
+            for sub in subscribers[type]:
+                print("Sending image")
+
+                img = {
+                    'url': groundstation_url + "/" + image['file_location'],
+                    '_id': str(image['_id']),
+                    'timestamp': image['timestmap'],
+                    'telemetry': {
+                        **image['telemetry'],
+                        '_id': str(image['telemetry']['_id'])
+                    }
+                }
+
+                sub.write_message(json.dumps(img))
 
 image_service = ImageService()
 
