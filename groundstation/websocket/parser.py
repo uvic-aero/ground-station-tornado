@@ -23,7 +23,8 @@ class Parser:
             self.parse_subscription(client, payload['subscribe'])
         if 'type' in payload:
             if payload['type'] == 'request_image_catchup':
-                asyncio.get_event_loop().create_task(self.parse_image_catchup(client))
+                last = payload['last'] if 'last' in payload else None
+                asyncio.get_event_loop().create_task(self.parse_image_catchup(client, last))
 
     def parse_subscription(self, client, subscription):
 
@@ -37,9 +38,9 @@ class Parser:
         else:
             pass
 
-    async def parse_image_catchup(self, client):
+    async def parse_image_catchup(self, client, last):
         
-        images = await database.get_next_images()
+        images = await database.get_next_images(last)
 
         for image in images:
 

@@ -65,7 +65,7 @@ class Database:
     # This requires sorting by timestamp, searching for images with lesser timestamp than image_id, and limiting
     # the return to 'count' number of results
     # New: Now pulls related telemetry document
-    async def get_next_images(self, _id = None, count = 10):
+    async def get_next_images(self, _id = None, count = 15):
         if(_id == None):
             cursor = await self._image_collection.find_one({}, sort=[('timestamp', pymongo.DESCENDING)])
         else: 
