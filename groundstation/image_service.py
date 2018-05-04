@@ -3,6 +3,7 @@ from .image import Image
 from .websocket import pubsub
 from tornado import ioloop
 from .constants import groundstation_url
+import json
 
 class ImageService:
 
@@ -21,8 +22,8 @@ class ImageService:
         await image.match_telemetry()
         await image.persist_to_database()
 
-        print("done")
-        print(image.telemetry)
+        # Send to webclients
+        await self.publish_image(image)
 
     async def publish_image(self, image):
 
@@ -32,16 +33,15 @@ class ImageService:
             if type != 'images':
                 continue
             for sub in subscribers[type]:
-                print("Sending image")
-
                 img = {
-                    'url': groundstation_url + "/" + image['file_location'],
-                    '_id': str(image['_id']),
-                    'timestamp': image['timestmap'],
+                    'url': groundstation_url + "/" + image.file_location,
+                    '_id': str(image.uuid),
+                    'timestamp': image.timestamp,
                     'telemetry': {
-                        **image['telemetry'],
-                        '_id': str(image['telemetry']['_id'])
-                    }
+                        **image.telemetry,
+                        '_id': str(image.telemetry['_id'])
+                    },
+                    'type': "image" # Tell webclient this is an image message
                 }
 
                 sub.write_message(json.dumps(img))
