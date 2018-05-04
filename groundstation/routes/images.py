@@ -51,5 +51,31 @@ class ImagesNextHandler (web.RequestHandler):
         pass
 
 class ImagesTagHandler (web.RequestHandler):
-    def post(self):
-        pass
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with,content-type")
+        self.set_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+
+    async def post(self, id):
+        # TODO: Verify the id is an actual existing image
+        await database.insert_image_tag(id);
+        self.write({})
+
+    def options(self, id):
+        self.set_status(204)
+        self.finish()
+
+class ImagesUntagHandler (web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with,content-type")
+        self.set_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+
+    async def post(self, id):
+        # TODO: Verify the id is an actual existing image
+        await database.remove_image_tag(id);
+        self.write({})
+
+    def options(self, id):
+        self.set_status(204)
+        self.finish()

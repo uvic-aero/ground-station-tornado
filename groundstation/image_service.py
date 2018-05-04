@@ -25,6 +25,7 @@ class ImageService:
         # Send to webclients
         await self.publish_image(image)
 
+    # For publishing a newly created image to the webclient
     async def publish_image(self, image):
 
         subscribers = pubsub.subscriptions.get_subscribers()
@@ -41,6 +42,7 @@ class ImageService:
                         **image.telemetry,
                         '_id': str(image.telemetry['_id'])
                     },
+                    'tagged': False,
                     'type': "image" # Tell webclient this is an image message
                 }
 

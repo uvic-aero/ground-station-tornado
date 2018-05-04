@@ -78,11 +78,15 @@ class Database:
         result = await self._image_collection.find({'timestamp': {'$not': {'$gt': cursor['timestamp']}}}, sort=[('timestamp', pymongo.DESCENDING)], limit=count).to_list(length=None)
 
         telemetry_ids = [x['telemetry_id'] for x in result]
+        image_ids = [str(x['_id']) for x in result]
 
         tel_result = await self._telemetry_collection.find({'_id': {'$in': telemetry_ids}}).to_list(length=None)
+        tag_result = await self._image_tag_collection.find({'image_id': {'$in': image_ids}}).to_list(length=None)
 
         for res in result:
             res['telemetry'] = next((x for x in tel_result if x['_id'] == res['telemetry_id']), None)
+            # TODO: currently, image_tag is stored as a string instead of ObjectId, replace to ObjectId eventually
+            res['tagged'] = next((True for x in tag_result if x['image_id'] == str(res['_id'])), False)
 
         return result
 
@@ -122,16 +126,16 @@ class Database:
     async def get_latest_telemetry(self):
         return await self._telemetry_collection.find_one({ "$query":{}, "$orderby":{ "_id": -1 }})
 
-
-    #----important images----#
-
     # write new image tag to image_tag collection: params(uuid)
     async def insert_image_tag(self, tag_id):
-        result = await self._image_tag_collection.insert({'uuid': tag_id})
+        exists = await self._image_tag_collection.find_one({'image_id': tag_id})
+        if exists is not None:
+            return
+        result = await self._image_tag_collection.insert({'image_id': tag_id})
 
     # remove specified image tag from image_tag collection: params(uuid)
     async def remove_image_tag(self, tag_id):
-        result = await self._image_tag_collection.remove({'uuid': tag_id})
+        result = await self._image_tag_collection.remove({'image_id': tag_id})
 
     # return a list of all image_tag objects from image_tag collection
     async def find_all_image_tags(self):
@@ -145,6 +149,6 @@ class Database:
         msg = document["message"]
         sys = document['system']
         ts = document['timestamp']
-        result = await self._log_collection.insert({'Time Stamp': ts, 'Message': msg, 'System': sys})
+        result = await self._log_collection.insert({'timestamp': ts, 'message': msg, 'system': sys})
 
 database = Database()

@@ -40,22 +40,26 @@ class Parser:
 
     async def parse_image_catchup(self, client, last):
         
-        images = await database.get_next_images(last)
+        try:
+            images = await database.get_next_images(last)
 
-        for image in images:
+            for image in images:
 
-            img = {
-                'url': groundstation_url + "/" + image['file_location'],
-                '_id': str(image['_id']),
-                'timestamp': image['timestamp'],
-                'telemetry': {
-                    **image['telemetry'],
-                    '_id': str(image['telemetry']['_id'])
-                },
-                'type': "image" # Tell webclient this is an image message
-            }
+                img = {
+                    'url': groundstation_url + "/" + image['file_location'],
+                    '_id': str(image['_id']),
+                    'timestamp': image['timestamp'],
+                    'telemetry': {
+                        **image['telemetry'],
+                        '_id': str(image['telemetry']['_id'])
+                    },
+                    'tagged': image['tagged'],
+                    'type': "image" # Tell webclient this is an image message
+                }
 
-            client.write_message(json.dumps(img))
+                client.write_message(json.dumps(img))
+        except Exception as e:
+            print(str(e))
         
         # Tell webclient load complete
         client.write_message(json.dumps({'type': "image_load_complete"}))
