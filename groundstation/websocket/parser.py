@@ -42,7 +42,7 @@ class Parser:
         
         images = await database.get_next_images(last)
 
-        for idx, image in enumerate(images):
+        for image in images:
 
             img = {
                 'url': groundstation_url + "/" + image['file_location'],
@@ -55,9 +55,7 @@ class Parser:
                 'type': "image" # Tell webclient this is an image message
             }
 
-            # If last image is sent & loaded, tell webclient this came from a webclient bulk load request
-            # Webclient will update its loading state and know the bulk request is finished
-            if idx == len(images) - 1:
-                img['source'] = 'request'
-
             client.write_message(json.dumps(img))
+        
+        # Tell webclient load complete
+        client.write_message(json.dumps({'type': "image_load_complete"}))
