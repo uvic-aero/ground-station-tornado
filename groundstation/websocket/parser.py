@@ -54,8 +54,8 @@ class Parser:
                     'type': "image" # Tell webclient this is an image message
                 }
 
-                if 'telemetry' in image:
-                    img['telemetry']: {
+                if 'telemetry' in image and image['telemetry'] is not None:
+                    img['telemetry'] = {
                         **image['telemetry'],
                         '_id': str(image['telemetry']['_id'])
                     }
