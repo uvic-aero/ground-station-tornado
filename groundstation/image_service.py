@@ -38,13 +38,16 @@ class ImageService:
                     'url': groundstation_url + "/" + image.file_location,
                     '_id': str(image.uuid),
                     'timestamp': image.timestamp,
-                    'telemetry': {
-                        **image.telemetry,
-                        '_id': str(image.telemetry['_id'])
-                    },
+                    'telemetry': None,
                     'tagged': False,
                     'type': "image" # Tell webclient this is an image message
                 }
+
+                if image.telemetry is not None:
+                    img['telemetry'] = {
+                        **image.telemetry,
+                        '_id': str(image.telemetry['_id'])
+                    },
 
                 sub.write_message(json.dumps(img))
 

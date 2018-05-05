@@ -49,13 +49,16 @@ class Parser:
                     'url': groundstation_url + "/" + image['file_location'],
                     '_id': str(image['_id']),
                     'timestamp': image['timestamp'],
-                    'telemetry': {
-                        **image['telemetry'],
-                        '_id': str(image['telemetry']['_id'])
-                    },
+                    'telemetry': None,
                     'tagged': image['tagged'],
                     'type': "image" # Tell webclient this is an image message
                 }
+
+                if 'telemetry' in image:
+                    img['telemetry']: {
+                        **image['telemetry'],
+                        '_id': str(image['telemetry']['_id'])
+                    }
 
                 client.write_message(json.dumps(img))
         except Exception as e:
