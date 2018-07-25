@@ -151,4 +151,12 @@ class Database:
         ts = document['timestamp']
         result = await self._log_collection.insert({'timestamp': ts, 'message': msg, 'system': sys})
 
+    #Mapping and Markers
+    async def do_find_markers(self, callback = None):
+        cursor = self._image_collection.find({})
+        temp = []
+        for document in await cursor.to_list(length=None):
+            temp.append({**document, **{'_id': str(document['_id'])}})
+        callback(temp)
+
 database = Database()

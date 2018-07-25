@@ -21,7 +21,8 @@ setup(name='groundstation',
           'pillow',
           'tornado',
           'motor',
-          'requests'
+          'requests',
+          'pymongo'
       ],
       entry_points="""
       # -*- Entry points: -*-

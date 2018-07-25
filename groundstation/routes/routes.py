@@ -7,6 +7,7 @@ from .log_handler import LogHandler
 from .images import ImagesHandler, ImagesByIdHandler, ImagesByIdJpgHandler, ImagesTagHandler, ImagesUntagHandler
 from .telemetry_handler import TelemetryHandler
 from .camera_handler import ZoomInHandler, ZoomOutHandler, CaptureStillHandler, ModeHandler, StatusHandler
+from .markers import MarkerHandler
 
 routes = [
     (r"/", IndexHandler),
@@ -22,5 +23,6 @@ routes = [
     (r"/camera/zoomout", ZoomOutHandler),
     (r"/camera/still", CaptureStillHandler),
     (r"/camera/mode", ModeHandler),
-    (r"/camera/status", StatusHandler)
+    (r"/camera/status", StatusHandler),
+    (r"/markers", MarkerHandler)
 ]
