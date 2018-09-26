@@ -10,7 +10,8 @@ class MarkerHandler(web.RequestHandler):
     
     @web.asynchronous
     def get(self):
-        asyncio.get_event_loop().create_task(database.do_find_markers(self.markers_received))
+        #Asyncronously call 'find_markers() from database'
+        #Note: pass in markers received to the find_markers function
 
     def markers_received(self, markers):
         self.write ({'markers': markers})
