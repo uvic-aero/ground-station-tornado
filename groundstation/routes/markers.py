@@ -12,7 +12,8 @@ class MarkerHandler(web.RequestHandler):
     def get(self):
         #Asyncronously call 'find_markers() from database'
         #Note: pass in markers received to the find_markers function
-
+        pass
+        
     def markers_received(self, markers):
         self.write ({'markers': markers})
         self.finish()

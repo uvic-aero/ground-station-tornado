@@ -155,5 +155,5 @@ class Database:
     async def find_all_markers(self, callback = None):
         #Markers must hold some information(img path, telemetry, uid)
         #similar to do_find_telemetry() function
-
+        pass
 database = Database()
