@@ -12,6 +12,8 @@ class MarkerHandler(web.RequestHandler):
     def get(self):
         #Asyncronously call 'find_markers() from database'
         #Note: pass in markers received to the find_markers function
+        loop = asyncio.get_event_loop()
+        loop.create_task(database.find_all_markers(self.markers_received))
         pass
         
     def markers_received(self, markers):
