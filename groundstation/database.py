@@ -17,6 +17,7 @@ class Database:
         self._telemetry_collection = self._db.get_collection('telemetry')
         self._image_tag_collection = self._db.get_collection('image_tags')
         self._log_collection = self._db.get_collection('logs')
+        self._marker_collection = self._db.get_collection('markers')
 
         return None
         
@@ -155,5 +156,9 @@ class Database:
     async def find_all_markers(self, callback = None):
         #Markers must hold some information(img path, telemetry, uid)
         #similar to do_find_telemetry() function
-        pass
+        cursor = self._marker_collection.find({})
+        temp = []
+        for document in await cursor.to_list(length=None):
+            temp.append(document)
+        callback(temp)
 database = Database()
