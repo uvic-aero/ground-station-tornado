@@ -23,6 +23,7 @@ routes = [
     (r"/camera/zoomout", ZoomOutHandler),
     (r"/camera/still", CaptureStillHandler),
     (r"/camera/mode", ModeHandler),
-    (r"/camera/status", StatusHandler)
+    (r"/camera/status", StatusHandler),
+    (r"/markers", MarkerHandler)
     #generate a route for MarkerHandler
 ]

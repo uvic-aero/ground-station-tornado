@@ -107,7 +107,7 @@ class Database:
         cursor = self._telemetry_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            temp.append(document)
+            temp.append({**document, **{'_id': str(document['_id'])}})
         callback(temp)
 
     async def get_nearest_telemetry(self, timestamp):
@@ -143,7 +143,7 @@ class Database:
         cursor = self._image_tag_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            temp.append(document)
+            temp.append({**document, **{'_id': str(document['_id'])}})
         return temp
     
     async def insert_log(self, document):
@@ -159,6 +159,8 @@ class Database:
         cursor = self._marker_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            temp.append(document)
+            temp.append({**document, **{'_id': str(document['_id'])}})
+        print(temp)
         callback(temp)
+
 database = Database()
