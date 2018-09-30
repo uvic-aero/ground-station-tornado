@@ -36,6 +36,7 @@ class Database:
 
     # write new image to image collection: params(image object)
     async def insert_image(self, document):
+        document['telemetry_id'] = str(document['telemetry_id'])
         result = await self._image_collection.insert_one(document)
         return result.inserted_id
 
@@ -156,9 +157,10 @@ class Database:
     async def find_all_markers(self, callback = None):
         #Markers must hold some information(img path, telemetry, uid)
         #similar to do_find_telemetry() function
-        cursor = self._marker_collection.find({})
+        cursor = self._image_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
+            print(document['telemetry_id'])
             temp.append({**document, **{'_id': str(document['_id'])}})
         print(temp)
         callback(temp)
