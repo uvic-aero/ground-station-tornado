@@ -160,9 +160,18 @@ class Database:
         cursor = self._image_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            print(document['telemetry_id'])
-            temp.append({**document, **{'_id': str(document['_id'])}})
-        print(temp)
+            temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
+            temp.append(
+                {
+                    **{'_id': str(document['_id'])},
+                    **{'lat': temp_telemetry['lat']},
+                    **{'lng': temp_telemetry['lon']},
+                    **{'timestamp': document['timestamp']}, 
+                    **{'file_path': document['file_location']},
+                    **{'thumbnail_path': 'not implemented'}
+                    }
+                )
+        
         callback(temp)
 
 database = Database()
