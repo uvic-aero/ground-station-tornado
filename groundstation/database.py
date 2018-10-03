@@ -163,9 +163,12 @@ class Database:
             temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
             temp.append(
                 {
+                    **{'position':{
+                            **{'lat': temp_telemetry['lat']},
+                            **{'lng': temp_telemetry['lon']}
+                        }
+                    },
                     **{'_id': str(document['_id'])},
-                    **{'lat': temp_telemetry['lat']},
-                    **{'lng': temp_telemetry['lon']},
                     **{'timestamp': document['timestamp']}, 
                     **{'file_path': document['file_location']},
                     **{'thumbnail_path': 'not implemented'}
