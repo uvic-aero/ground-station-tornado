@@ -177,4 +177,14 @@ class Database:
         
         callback(temp)
 
+
+    #This function is designed to organize then return geoJson objects 
+    #by combining thumbnails, markers (points) and images
+    #Documentation on mongodb geoJson objects can be found here 
+    # https://docs.mongodb.com/manual/reference/geojson/
+
+    async def find_geoJson(self, callback = None):
+        temp = None
+        callback(temp)
+
 database = Database()
