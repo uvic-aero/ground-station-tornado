@@ -167,11 +167,8 @@ class Database:
                             **{'lat': temp_telemetry['lat']},
                             **{'lng': temp_telemetry['lon']}
                         }
-                    },
-                    **{'_id': str(document['_id'])},
-                    **{'timestamp': document['timestamp']}, 
-                    **{'file_path': document['file_location']},
-                    **{'thumbnail_path': 'not implemented'}
+                    }
+                    #**{'icon': '/path/to/icon'}
                     }
                 )
         
