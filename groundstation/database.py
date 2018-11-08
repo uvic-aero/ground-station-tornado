@@ -174,4 +174,34 @@ class Database:
         
         callback(temp)
 
+
+    #This function is designed to organize then return geoJson objects 
+    #by combining thumbnails, markers (points) and images
+    #Documentation on mongodb geoJson objects can be found here 
+    # https://docs.mongodb.com/manual/reference/geojson/
+
+    async def find_geoJson(self, callback = None):
+        #Markers must hold some information(img path, telemetry, uid)
+        #similar to do_find_telemetry() function
+        cursor = self._telemetry_collection.find({})
+        temp = []
+        for document in await cursor.to_list(length=None):
+            temp.append(
+               {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                        document['lat'], document['lon']
+                        ]
+                    },
+                    "properties": {
+                        "thumbnail_path": "not implemented yet"
+                    }
+                }
+            )
+        
+        callback(temp)
+
 database = Database()
+
