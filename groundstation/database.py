@@ -199,7 +199,7 @@ class Database:
                         ]
                     },
                     "properties": {
-                        "thumbnail_path": "not implemented"
+                        "thumbnail_path": "not implemented yet"
                     }
                 }
             )
