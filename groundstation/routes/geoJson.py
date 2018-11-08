@@ -17,5 +17,5 @@ class geoJsonHandler(web.RequestHandler):
         pass
         
     def geoJson_received(self, geoJson):
-        self.write ({'geoJSON': GeoJson})
+        self.write ({'geoJSON': geoJson})
         self.finish()
