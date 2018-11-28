@@ -22,14 +22,8 @@ test_images = [{
     'url': 'http://i.dailymail.co.uk/i/pix/2014/01/10/article-2537126-1A8B1A2E00000578-874_634x453.jpg'
 }]
 
-test_telemetry = {
-    'telemetry_data': {
-        'lat': 45.709,
-        'long': 104.3467,
-        'alt_rel': 25,
-        'timestamp': 0
-    }
-}
+
+test_telemetry = {}
 
 class Simulator:
     def __init__(self):
@@ -38,8 +32,8 @@ class Simulator:
     def start(self):
         
         ioloop.PeriodicCallback(self.send_images_internal, 3000).start()
-        #ioloop.PeriodicCallback(self.send_images_webclient, 1000).start()
-        #ioloop.PeriodicCallback(self.send_telemetry_webclient, 500).start()
+        ioloop.PeriodicCallback(self.send_images_webclient, 1000).start()
+        ioloop.PeriodicCallback(self.send_telemetry_webclient, 500).start()
         ioloop.PeriodicCallback(self.send_telemetry_internal, 1000).start()
 
     def send_images_internal(self):
@@ -85,9 +79,27 @@ class Simulator:
             if type != 'telemetry':
                 continue
             for sub in subscribers[type]:
+
+                test_telemetry = {
+                    'telemetry_data': {
+                        'lat': random.uniform(46.7,45.8),
+                        'long': random.uniform(104.3, 104.4),
+                        'alt_rel': 25,
+                        'timestamp': 0
+                    }
+                }
                 sub.write_message(json.dumps(test_telemetry))
 
+    # Generate telemetry data with random lat and long coordinates
     def send_telemetry_internal(self):
-
         # Send UDP data to GPS receiver server
+        test_telemetry = {
+            'telemetry_data': {
+                'lat': random.uniform(46.7,45.8),
+                'long': random.uniform(104.3, 104.4),
+                'alt_rel': 25,
+                'timestamp': 0
+            }
+        }
+        print('Inserting random telemetry point: ' + str(test_telemetry))
         socket.socket(socket.AF_INET, socket.SOCK_DGRAM).sendto(json.dumps(test_telemetry).encode(), ("127.0.0.1", 24001))
