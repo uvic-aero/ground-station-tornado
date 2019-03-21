@@ -14,12 +14,12 @@ class ImageService:
         print("Starting image service")
 
     # If we receive a new image, store it & match telemetry
-    async def add_new_image(self, timestamp, jpeg):
+    async def add_new_image(self, timestamp, jpeg, telemetry):
 
         image = Image()
         image.timestamp = timestamp
         image.jpeg_data = jpeg
-        await image.match_telemetry()
+        image.telemetry = telemetry
         await image.persist_to_database()
 
         # Send to webclients

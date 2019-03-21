@@ -11,8 +11,9 @@ class ImagesHandler (web.RequestHandler):
         data = json.loads(self.request.body)
         timestamp = data ["timestamp"]
         image = base64.b64decode(data ["image"])
+        telemetry = data["telemetry"]
 
-        await image_service.add_new_image(timestamp, image)
+        await image_service.add_new_image(timestamp, image, telemetry)
 
     @web.asynchronous
     def get(self):

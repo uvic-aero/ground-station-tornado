@@ -36,7 +36,7 @@ class Database:
 
     # write new image to image collection: params(image object)
     async def insert_image(self, document):
-        document['telemetry_id'] = str(document['telemetry_id'])
+        document['telemetry'] = str(document['telemetry'])
         result = await self._image_collection.insert_one(document)
         return result.inserted_id
 
