@@ -15,10 +15,10 @@ This is a Python project for connecting all of the various parts of the AERO gro
 	There may be some Python requirments not installed through the install script, just `pip3 install <package name>` for any dependencies that have not been installed yet.
 
 ### Usage
-1. Run mongod in terminal `mongod`
+1. Run `mongod` in terminal
 1. To run the project(while in the groundstation directory), use the following command:
 
     `python start.py`
 
 This will start the various servers and continue running.
-
+* If on-board-computer is running and configured properly on the network, images should start populating the `images` directory in this repository.
