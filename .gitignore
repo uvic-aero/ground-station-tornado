@@ -5,7 +5,7 @@
 /parts/
 /.installed.cfg
 /eggs/
-/**/__pycache__/
+*.pyc
 /groundstation.egg-info/
 /tests/*
 !/tests/.gitkeep
