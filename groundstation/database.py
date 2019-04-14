@@ -5,6 +5,7 @@ import asyncio
 import pprint
 import time
 import pymongo
+from ast import literal_eval
 from bson.objectid import ObjectId
 
 
@@ -160,17 +161,19 @@ class Database:
         cursor = self._image_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
+            #temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
+            telemetry = literal_eval(document['telemetry'])
             temp.append(
                 {
-                    **{'position':{
-                            **{'lat': temp_telemetry['lat']},
-                            **{'lng': temp_telemetry['lon']}
-                        }
+                    'position':{
+                        'lat': telemetry['lat'],
+                        'lng': telemetry['lng'],
+                        'alt': telemetry['alt'],
                     }
-                    #**{'icon': '/path/to/icon'}
-                    }
-                )
+                    'image_path': document['file_location'],
+                }
+            )
+            print(document)
         
         callback(temp)
 
