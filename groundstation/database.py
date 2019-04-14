@@ -169,7 +169,7 @@ class Database:
                         'lat': telemetry['lat'],
                         'lng': telemetry['lng'],
                         'alt': telemetry['alt'],
-                    }
+                    },
                     'image_path': document['file_location'],
                 }
             )
