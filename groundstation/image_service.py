@@ -20,6 +20,7 @@ class ImageService:
         image.timestamp = timestamp
         image.jpeg_data = jpeg
         image.telemetry = telemetry
+        print('adding image to db: ', image.telemetry)
         await image.persist_to_database()
 
         # Send to webclients
@@ -31,7 +32,6 @@ class ImageService:
         print('publishing')
 
         subscribers = pubsub.subscriptions.get_subscribers()
-        print('subs ', subscribers)
         for type in subscribers:
             #if type != 'images':
             #    continue
@@ -44,9 +44,6 @@ class ImageService:
                     'tagged': False,
                     'type': "image" # Tell webclient this is an image message
                 }
-
-                print(img)
-
                 sub.write_message(json.dumps(img))
 
 image_service = ImageService()

@@ -167,14 +167,12 @@ class Database:
                 {
                     'position':{
                         'lat': telemetry['lat'],
-                        'lng': telemetry['lng'],
+                        'lng': telemetry['lon'],
                         'alt': telemetry['alt'],
                     },
                     'image_path': document['file_location'],
                 }
             )
-            print(document)
-        
         callback(temp)
 
 
