@@ -164,16 +164,16 @@ class Database:
             #temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
             telemetry = literal_eval(document['telemetry'])
             
-            telemetry['alt'] = 0
+            #telemetry['alt'] = 0
 
             temp.append(
                 {
                     'position':{
-                        'lat': telemetry['lat'],
-                        'lng': telemetry['lon'],
-                        'alt': telemetry['alt'],
+                        'lat': float(telemetry['lat']),
+                        'lng': float(telemetry['lon']),
                     },
                     'image_path': document['file_location'],
+                    'alt': telemetry['alt'],
                 }
             )
         callback(temp)
