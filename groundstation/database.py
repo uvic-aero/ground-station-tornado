@@ -112,10 +112,11 @@ class Database:
             temp.append({**document, **{'_id': str(document['_id'])}})
         callback(temp)
 
+    # modified format to match proper JSON structure
     async def get_nearest_telemetry(self, timestamp):
 
         cursor = self._telemetry_collection.aggregate([
-            {'$project': {'diff': {'$abs': {'$subtract': [timestamp, '$timestamp']}}, 'timestamp': '$timestamp', 'lat': '$lat', 'lon': '$lon','alt': '$alt' }},
+            {'$project': {'diff': {'$abs': {'$subtract': [timestamp, '$timestamp']}}, "timestamp": '$timestamp', "lat": '$lat', "lon": '$lon',"alt": '$alt' }},
             {'$sort': {'diff': 1}},
             {'$limit': 1}
         ])

@@ -5,12 +5,20 @@ from ..image_service import image_service
 from tornado import web 
 from ..database import database
 import asyncio
+from ..image import Image
+from ..constants import groundstation_url
 
 class ImagesHandler (web.RequestHandler):
+   
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with,content-type")
+        self.set_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+
     async def post(self):
         data = json.loads(self.request.body)
         timestamp = data ["timestamp"]
-        image = base64.b64decode(data ["image"])
+        image = base64.b64decode(data["image"])
         telemetry = data["telemetry"]
 
         await image_service.add_new_image(timestamp, image, telemetry)
@@ -21,6 +29,10 @@ class ImagesHandler (web.RequestHandler):
 
     def _images_received(self, images):
         self.write ({'images': images})
+        self.finish()
+    
+    def options(self):
+        self.set_status(204)
         self.finish()
 
 class ImagesByIdHandler (web.RequestHandler):
@@ -59,7 +71,7 @@ class ImagesTagHandler (web.RequestHandler):
 
     async def post(self, id):
         # TODO: Verify the id is an actual existing image
-        await database.insert_image_tag(id);
+        await database.insert_image_tag(id)
         self.write({})
 
     def options(self, id):
@@ -74,9 +86,44 @@ class ImagesUntagHandler (web.RequestHandler):
 
     async def post(self, id):
         # TODO: Verify the id is an actual existing image
-        await database.remove_image_tag(id);
+        await database.remove_image_tag(id)
         self.write({})
 
     def options(self, id):
+        self.set_status(204)
+        self.finish()
+
+# Images with telem data endpoint
+# prepares and sends all images in GS along with their repsective telemetry data
+class ImagesWithTelemHandler (web.RequestHandler):
+   
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with,content-type")
+        self.set_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+
+    @web.asynchronous
+    def get(self):
+        asyncio.get_event_loop().create_task(database.do_find_images(self._images_received))
+
+    def _images_received(self, images):
+        formatted_images = []
+        img = {}
+        # print(images)
+        for image in images:
+            telem = json.loads( image['telemetry'].replace('\'', '\"') )
+            img['url'] = groundstation_url + "/" + image['file_location']
+            img['_id'] = str(image['_id'])
+            img['telemetry'] = {"lat": telem['lat'], "lon": telem['lon'], "alt": telem['alt']}
+            img['tagged'] = False
+            img['type']: "image" # Tell webclient this is an image message
+            img['timestamp'] = image['timestamp']
+            formatted_images.append(img)
+            print(img['telemetry'])
+            img = {}
+        self.write ({'images': formatted_images})
+        self.finish()
+    
+    def options(self):
         self.set_status(204)
         self.finish()

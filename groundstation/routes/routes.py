@@ -4,7 +4,7 @@ import tornado.ioloop
 import tornado.web
 import asyncio
 from .log_handler import LogHandler
-from .images import ImagesHandler, ImagesByIdHandler, ImagesByIdJpgHandler, ImagesTagHandler, ImagesUntagHandler
+from .images import ImagesHandler, ImagesByIdHandler, ImagesByIdJpgHandler, ImagesTagHandler, ImagesUntagHandler, ImagesWithTelemHandler
 from .telemetry_handler import TelemetryHandler
 from .camera_handler import ZoomInHandler, ZoomOutHandler, CaptureStillHandler, ModeHandler, StatusHandler
 from .markers import MarkerHandler
@@ -15,6 +15,7 @@ routes = [
     (r"/", IndexHandler),
     (r"/images", ImagesHandler),
     (r"/images/by_coordinates", ImageByCoordinateHandler),
+    (r"/images/telem",ImagesWithTelemHandler),
     (r"/logs", LogHandler),
     (r"/images/(.*)\.jpg", ImagesByIdJpgHandler), # For returning actual image data as binary jpg
     (r"/images/(.*)/tag", ImagesTagHandler),
