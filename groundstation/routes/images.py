@@ -1,5 +1,6 @@
 import requests 
 import json
+from ast import literal_eval
 import base64
 from ..image_service import image_service
 from tornado import web 
@@ -28,7 +29,22 @@ class ImagesHandler (web.RequestHandler):
         asyncio.get_event_loop().create_task(database.do_find_images(self._images_received))
 
     def _images_received(self, images):
-        self.write ({'images': images})
+        formatted_images = []
+        img = {}
+        # print(images)
+        for image in images:
+            # telem = json.loads( image['telemetry'].replace('\'', '\"') )
+            telem = literal_eval(image['telemetry'])
+            img['url'] = groundstation_url + "/" + image['file_location']
+            img['_id'] = str(image['_id'])
+            img['telemetry'] = {"lat": telem['lat'], "lon": telem['lon'], "alt": telem['alt']}
+            img['tagged'] = False
+            img['type']: "image" # Tell webclient this is an image message
+            img['timestamp'] = image['timestamp']
+            formatted_images.append(img)
+            print(img['telemetry'])
+            img = {}
+        self.write ({'images': formatted_images})
         self.finish()
     
     def options(self):
@@ -90,40 +106,5 @@ class ImagesUntagHandler (web.RequestHandler):
         self.write({})
 
     def options(self, id):
-        self.set_status(204)
-        self.finish()
-
-# Images with telem data endpoint
-# prepares and sends all images in GS along with their repsective telemetry data
-class ImagesWithTelemHandler (web.RequestHandler):
-   
-    def set_default_headers(self):
-        self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers", "x-requested-with,content-type")
-        self.set_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-
-    @web.asynchronous
-    def get(self):
-        asyncio.get_event_loop().create_task(database.do_find_images(self._images_received))
-
-    def _images_received(self, images):
-        formatted_images = []
-        img = {}
-        # print(images)
-        for image in images:
-            telem = json.loads( image['telemetry'].replace('\'', '\"') )
-            img['url'] = groundstation_url + "/" + image['file_location']
-            img['_id'] = str(image['_id'])
-            img['telemetry'] = {"lat": telem['lat'], "lon": telem['lon'], "alt": telem['alt']}
-            img['tagged'] = False
-            img['type']: "image" # Tell webclient this is an image message
-            img['timestamp'] = image['timestamp']
-            formatted_images.append(img)
-            print(img['telemetry'])
-            img = {}
-        self.write ({'images': formatted_images})
-        self.finish()
-    
-    def options(self):
         self.set_status(204)
         self.finish()

@@ -162,7 +162,6 @@ class Database:
         cursor = self._image_collection.find({})
         temp = []
         for document in await cursor.to_list(length=None):
-            #temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
             telemetry = literal_eval(document['telemetry'])
             
             telemetry['alt'] = 0
