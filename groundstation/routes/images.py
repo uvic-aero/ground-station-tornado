@@ -29,19 +29,10 @@ class ImagesHandler (web.RequestHandler):
         asyncio.get_event_loop().create_task(database.find_all_images(self._images_received))
 
     def _images_received(self, images):
-        formatted_images = []
-        img = {}
         for image in images:
-            telem = image['telemetry']
-            img['url'] = groundstation_url + "/" + image['file_location']
-            img['_id'] = str(image['_id'])
-            img['telemetry'] = {"lat": telem['lat'], "lon": telem['lon'], "alt": telem['alt']}
-            img['tagged'] = False
-            img['type']: "image" # Tell webclient this is an image message
-            img['timestamp'] = image['timestamp']
-            formatted_images.append(img)
-            img = {}
-        self.write ({'images': formatted_images})
+            image['url'] = groundstation_url + "/" + image['file_location']
+        
+        self.write ({'images': images})
         self.finish()
     
     def options(self):

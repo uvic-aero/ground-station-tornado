@@ -172,6 +172,8 @@ class Database:
                         'lon': float(telemetry['lon']),
                         'alt': float(telemetry['alt']),
                     },
+                    'type': 'image',
+                    'tagged': None,
                     '_id': str(document['_id']),
                     'file_location': document['file_location'],
                     'timestamp': document['timestamp'],
