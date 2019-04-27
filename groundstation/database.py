@@ -156,22 +156,26 @@ class Database:
         result = await self._log_collection.insert({'timestamp': ts, 'message': msg, 'system': sys})
 
     #Mapping and Markers
-    async def find_all_markers(self, callback = None):
+    async def find_all_images(self, callback = None):
         #Markers must hold some information(img path, telemetry, uid)
         #similar to do_find_telemetry() function
         cursor = self._image_collection.find({})
         temp = []
+        
         for document in await cursor.to_list(length=None):
             telemetry = literal_eval(document['telemetry'])
             
             temp.append(
                 {
-                    'position':{
+                    'telemetry':{
                         'lat': float(telemetry['lat']),
-                        'lng': float(telemetry['lon']),
+                        'lon': float(telemetry['lon']),
+                        'alt': float(telemetry['alt']),
                     },
-                    'image_path': document['file_location'],
-                    'alt': telemetry['alt'],
+                    '_id': str(document['_id']),
+                    'file_location': document['file_location'],
+                    'timestamp': document['timestamp'],
+                    'tagged': False,
                 }
             )
         callback(temp)

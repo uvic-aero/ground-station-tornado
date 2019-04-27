@@ -26,15 +26,13 @@ class ImagesHandler (web.RequestHandler):
 
     @web.asynchronous
     def get(self):
-        asyncio.get_event_loop().create_task(database.do_find_images(self._images_received))
+        asyncio.get_event_loop().create_task(database.find_all_images(self._images_received))
 
     def _images_received(self, images):
         formatted_images = []
         img = {}
-        # print(images)
         for image in images:
-            # telem = json.loads( image['telemetry'].replace('\'', '\"') )
-            telem = literal_eval(image['telemetry'])
+            telem = image['telemetry']
             img['url'] = groundstation_url + "/" + image['file_location']
             img['_id'] = str(image['_id'])
             img['telemetry'] = {"lat": telem['lat'], "lon": telem['lon'], "alt": telem['alt']}
