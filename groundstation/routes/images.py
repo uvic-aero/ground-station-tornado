@@ -42,7 +42,6 @@ class ImagesHandler (web.RequestHandler):
             img['type']: "image" # Tell webclient this is an image message
             img['timestamp'] = image['timestamp']
             formatted_images.append(img)
-            print(img['telemetry'])
             img = {}
         self.write ({'images': formatted_images})
         self.finish()
