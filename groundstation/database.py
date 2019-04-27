@@ -164,8 +164,6 @@ class Database:
             #temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
             telemetry = literal_eval(document['telemetry'])
             
-            #telemetry['alt'] = 0
-
             temp.append(
                 {
                     'position':{
