@@ -164,16 +164,14 @@ class Database:
         for document in await cursor.to_list(length=None):
             telemetry = literal_eval(document['telemetry'])
             
-            telemetry['alt'] = 0
-
             temp.append(
                 {
                     'position':{
-                        'lat': telemetry['lat'],
-                        'lng': telemetry['lon'],
-                        'alt': telemetry['alt'],
+                        'lat': float(telemetry['lat']),
+                        'lng': float(telemetry['lon']),
                     },
                     'image_path': document['file_location'],
+                    'alt': telemetry['alt'],
                 }
             )
         callback(temp)
