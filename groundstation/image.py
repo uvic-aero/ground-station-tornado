@@ -48,7 +48,7 @@ class Image:
         document = {
             'timestamp' : self.timestamp, 
             'file_location' : self.file_location,
-            'telemetry_id' : self.telemetry['_id'] if self.telemetry is not None else None
+            'telemetry' : self.telemetry
         }
 
         self.uuid = await database.insert_image(document)

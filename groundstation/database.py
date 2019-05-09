@@ -5,6 +5,7 @@ import asyncio
 import pprint
 import time
 import pymongo
+from ast import literal_eval
 from bson.objectid import ObjectId
 
 
@@ -36,7 +37,7 @@ class Database:
 
     # write new image to image collection: params(image object)
     async def insert_image(self, document):
-        document['telemetry_id'] = str(document['telemetry_id'])
+        document['telemetry'] = str(document['telemetry'])
         result = await self._image_collection.insert_one(document)
         return result.inserted_id
 
@@ -111,10 +112,11 @@ class Database:
             temp.append({**document, **{'_id': str(document['_id'])}})
         callback(temp)
 
+    # modified format to match proper JSON structure
     async def get_nearest_telemetry(self, timestamp):
 
         cursor = self._telemetry_collection.aggregate([
-            {'$project': {'diff': {'$abs': {'$subtract': [timestamp, '$timestamp']}}, 'timestamp': '$timestamp', 'lat': '$lat', 'lon': '$lon','alt': '$alt' }},
+            {'$project': {'diff': {'$abs': {'$subtract': [timestamp, '$timestamp']}}, "timestamp": '$timestamp', "lat": '$lat', "lon": '$lon',"alt": '$alt' }},
             {'$sort': {'diff': 1}},
             {'$limit': 1}
         ])
@@ -154,24 +156,30 @@ class Database:
         result = await self._log_collection.insert({'timestamp': ts, 'message': msg, 'system': sys})
 
     #Mapping and Markers
-    async def find_all_markers(self, callback = None):
+    async def find_all_images(self, callback = None):
         #Markers must hold some information(img path, telemetry, uid)
         #similar to do_find_telemetry() function
         cursor = self._image_collection.find({})
         temp = []
+        
         for document in await cursor.to_list(length=None):
-            temp_telemetry = await self._telemetry_collection.find_one({'_id': ObjectId(document['telemetry_id'])})
+            telemetry = literal_eval(document['telemetry'])
+            
             temp.append(
                 {
-                    **{'position':{
-                            **{'lat': temp_telemetry['lat']},
-                            **{'lng': temp_telemetry['lon']}
-                        }
-                    }
-                    #**{'icon': '/path/to/icon'}
-                    }
-                )
-        
+                    'telemetry':{
+                        'lat': float(telemetry['lat']),
+                        'lon': float(telemetry['lon']),
+                        'alt': float(telemetry['alt']),
+                    },
+                    'type': 'image',
+                    'tagged': None,
+                    '_id': str(document['_id']),
+                    'file_location': document['file_location'],
+                    'timestamp': document['timestamp'],
+                    'tagged': False,
+                }
+            )
         callback(temp)
 
 
