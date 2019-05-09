@@ -9,6 +9,7 @@
 /groundstation.egg-info/
 /tests/*
 !/tests/.gitkeep
+.vscode
 .project
 .pydevproject
 .idea
